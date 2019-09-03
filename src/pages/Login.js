@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Login = () => {
+  const [user, setUser] = useState({ id: null, password: null });
+  const { id, password } = user;
   const handleClick = () => {
     //서버에 포스트 요청을 보낸다
     //보낼 값은 아이디와 비밀번호
