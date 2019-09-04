@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import { Input, Button } from "antd";
+import setDataToState from "../modules/setDataToState";
 
 const FindId = () => {
   const InputGroup = Input.Group;
   const [email, setEmail] = useState({ id: "", address: "" });
   const { id, address } = email;
-  const handleChangeId = () => {
-    let id = document.getElementById("id").value;
-    setEmail({ ...email, id: id });
-  };
-  const handleChangeAddress = () => {
-    let address = document.getElementById("address").value;
-    setEmail({ ...email, address: address });
+  const handleChange = e => {
+    setDataToState(e.target.id, setEmail, email);
   };
   const handleClick = () => {
     // email을 body에 담아 서버에 포스트 요청을 보낸다.
@@ -35,13 +31,9 @@ const FindId = () => {
           id="id"
           style={{ width: "45%" }}
           addonAfter="@"
-          onChange={handleChangeId}
+          onChange={handleChange}
         />
-        <Input
-          id="address"
-          style={{ width: "55%" }}
-          onChange={handleChangeAddress}
-        />
+        <Input id="address" style={{ width: "55%" }} onChange={handleChange} />
       </InputGroup>
       <div id="message"></div>
       <Button
