@@ -21,7 +21,7 @@ const FindId = () => {
   };
   return (
     <div>
-      <div>가입시 입력한 이메일을 입력해 주세요.</div>
+      <div>이메일을 입력해 주세요.</div>
       <InputGroup compact>
         <Input
           id="id"
