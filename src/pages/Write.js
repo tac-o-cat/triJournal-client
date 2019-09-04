@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Input, Button } from "antd";
+import setDataToState from "../modules/setDataToState";
 
 const Write = () => {
   const style = {
     margin: "3px 3px 3px 3px"
-  };
-  const setDataToState = (elementId, setter, state) => {
-    let data = document.getElementById(elementId).value;
-    setter({ ...state, [elementId]: data });
   };
   const [journal, setJournal] = useState({
     best: "",
