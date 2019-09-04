@@ -4,7 +4,9 @@ import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import FindId from "./FindId";
 import FindPw from "./FindPw";
 
-const FindIdPw = () => {
+// eslint-disable-next-line react/prop-types
+const FindIdPw = ({ history }) => {
+  console.log(history);
   return (
     <Router>
       <div
@@ -23,9 +25,14 @@ const FindIdPw = () => {
         <Link to="/find/password">
           <Button>비밀번호 찾기</Button>
         </Link>
-        <Link to="/login">
-          <Button>뒤로 가기</Button>
-        </Link>
+        <Button
+          onClick={() => {
+            // eslint-disable-next-line react/prop-types
+            history.push("/login");
+          }}
+        >
+          뒤로 가기
+        </Button>
       </div>
       <Switch>
         <Route path="/find/id" component={FindId} />
