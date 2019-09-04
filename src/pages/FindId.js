@@ -20,18 +20,26 @@ const FindId = () => {
     message.innerHTML = "해당 이메일로 가입한 아이디가 없습니다.";
   };
   return (
-    <div>
-      <div>이메일을 입력해 주세요.</div>
-      <InputGroup compact>
+    <div
+      style={{
+        position: "absolute",
+        top: "45%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        textAlign: "center"
+      }}
+    >
+      <div style={{ margin: "3px 3px 3px 3px" }}>이메일을 입력해 주세요.</div>
+      <InputGroup compact style={{ margin: "3px 3px 3px 3px" }}>
         <Input
           id="id"
-          style={{ width: "30%" }}
+          style={{ width: "45%" }}
           addonAfter="@"
           onChange={handleChangeId}
         />
         <Input
           id="address"
-          style={{ width: "40%" }}
+          style={{ width: "55%" }}
           onChange={handleChangeAddress}
         />
       </InputGroup>
@@ -40,6 +48,7 @@ const FindId = () => {
         type="primary"
         onClick={handleClick}
         disabled={id.length && address.length ? false : true}
+        style={{ margin: "3px 3px 3px 3px" }}
       >
         완료
       </Button>
