@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { Button, Input } from "antd";
 
 const Login = () => {
   const [user, setUser] = useState({ id: null, password: null });
@@ -13,17 +14,26 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        position: "absolute",
+        top: "30%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        textAlign: "center"
+      }}
+    >
+      <h3>triJournal</h3>
       <div>
-        ID: <input placeholder="Id" type="text" />
+        <Input placeholder="ID" type="text" />
       </div>
       <div>
-        PASSWORD: <input placeholder="Password" type="password" />
+        <Input placeholder="Password" type="password" />
       </div>
-      <button onClick={handleClick}>Login</button>
+      <Button onClick={handleClick}>Login</Button>
       <div>Sign Up</div>
-      <Link to="/login/find">
-        <div>Find ID, PASSWORD</div>
+      <Link to="/find">
+        <div>Find ID/Password</div>
       </Link>
     </div>
   );
