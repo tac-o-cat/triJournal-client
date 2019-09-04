@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Layout, Icon } from "antd";
 import Write from "./Write";
@@ -6,6 +6,8 @@ import NavBar from "./NavBar";
 
 const Page = () => {
   const { Header, Content } = Layout;
+  // eslint-disable-next-line no-unused-vars
+  const [currentUser, setCurrentUser] = useState({ user: "", profilePic: "" });
   return (
     <Router>
       <Header style={{ backgroundColor: "yellow" }}>
