@@ -22,29 +22,40 @@ const FindPw = () => {
     // pw를 바로 받는 방법? 서버에서 인증 이메일을 보내는 방법? 논의 필요함.
   };
   return (
-    <div>
-      <div>아이디와 이메일을 입력해 주세요.</div>
+    <div
+      style={{
+        position: "absolute",
+        top: "45%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        textAlign: "center"
+      }}
+    >
+      <div style={{ margin: "3px 3px 3px 3px" }}>
+        아이디와 이메일을 입력해 주세요.
+      </div>
       <Input
         id="id"
         compact="true"
         placeholder="아이디"
-        style={{ width: "40%" }}
+        style={{ width: "40%", margin: "3px 3px 3px 3px" }}
         onChange={handleChangeId}
       />
-      <InputGroup compact>
+      <InputGroup compact style={{ margin: "3px 3px 3px 3px" }}>
         <Input
           id="emailId"
-          style={{ width: "30%" }}
+          style={{ width: "45%" }}
           addonAfter="@"
           onChange={handleChangeEmailId}
         />
         <Input
           id="address"
-          style={{ width: "40%" }}
+          style={{ width: "55%" }}
           onChange={handleChangeAddress}
         />
       </InputGroup>
       <Button
+        style={{ margin: "3px 3px 3px 3px" }}
         type="primary"
         onClick={handleClick}
         disabled={id.length && emailId.length && address.length ? false : true}
