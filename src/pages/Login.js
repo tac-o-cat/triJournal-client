@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [user, setUser] = useState({ id: null, password: null });
@@ -20,7 +22,9 @@ const Login = () => {
       </div>
       <button onClick={handleClick}>Login</button>
       <div>Sign Up</div>
-      <div>Find ID, PASSWORD</div>
+      <Link to="/login/find">
+        <div>Find ID, PASSWORD</div>
+      </Link>
     </div>
   );
 };
