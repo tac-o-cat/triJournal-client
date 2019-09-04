@@ -24,13 +24,15 @@ const Login = () => {
       }}
     >
       <h3>triJournal</h3>
-      <div>
+      <div style={{ margin: "3px 3px 3px 3px" }}>
         <Input placeholder="ID" type="text" />
       </div>
-      <div>
+      <div style={{ margin: "3px 3px 3px 3px" }}>
         <Input placeholder="Password" type="password" />
       </div>
-      <Button onClick={handleClick}>Login</Button>
+      <Button onClick={handleClick} style={{ margin: "3px 3px 3px 3px" }}>
+        Login
+      </Button>
       <div>Sign Up</div>
       <Link to="/find">
         <div>Find ID/Password</div>
