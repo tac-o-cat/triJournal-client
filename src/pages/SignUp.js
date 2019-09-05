@@ -1,15 +1,17 @@
 import React, { useState } from "react";
+import { Button, Input } from "antd";
 
 const SignUp = () => {
   const [state, setState] = useState({
     id: "",
     password: "",
-    email: "",
+    email: { id: "", address: "" },
     isIdUnique: false,
     pwCheck: false
   });
   const { id, password, email, isIdUnique, pwCheck } = state;
-
+  const InputGroup = Input.Group;
+  const style = { margin: "3px 3px 3px 3px" };
   const handleClickConfirm = () => {
     if (
       id.length > 0 &&
@@ -25,11 +27,19 @@ const SignUp = () => {
     }
   };
 
-  const handleChangeEmail = () => {
-    let email = document.getElementById("email").value;
+  const handleChangeEmailId = () => {
+    let emailId = document.getElementById("emailId").value;
     setState({
       ...state,
-      email: email
+      email: { ...email, id: emailId }
+    });
+  };
+
+  const handleChangeAddress = () => {
+    let address = document.getElementById("address").value;
+    setState({
+      ...state,
+      email: { ...email, address: address }
     });
   };
 
@@ -84,43 +94,68 @@ const SignUp = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        position: "absolute",
+        top: "30%",
+        left: "50%",
+        width: "50%",
+        transform: "translate(-50%, -50%)",
+        textAlign: "center"
+      }}
+    >
       <h3>회원가입</h3>
       <div>
-        ID:{" "}
-        <input
+        <Input
+          style={{ ...style, width: "30%" }}
           placeholder="ID"
           type="text"
           id="inputId"
           onChange={handleChangeId}
         />
-        <button onClick={handleClickIdCheck}>중복확인</button>
-        <span id="inputIdCheck"></span>
+        <Button style={style} onClick={handleClickIdCheck}>
+          중복확인
+        </Button>
+        <div style={style} id="inputIdCheck"></div>
       </div>
       <div>
-        PASSWORD: <input placeholder="PASSWORD" type="password" id="password" />
+        <Input
+          style={{ ...style, width: "46%" }}
+          placeholder="PASSWORD"
+          type="password"
+          id="password"
+        />
       </div>
       <div>
-        CONFIRM PASSWORD:{" "}
-        <input
+        <Input
+          style={{ ...style, width: "46%" }}
           placeholder="PASSWORD"
           type="password"
           id="confirmPassword"
           onChange={handleChangePassword}
         />
-        <span id="confirmMessage">패스워드가 일치하지 않습니다.</span>
+        <div style={style} id="confirmMessage"></div>
       </div>
       <div>
-        E-MAIL:{" "}
-        <input
-          placeholder="E-MAIL"
-          type="email"
-          id="email"
-          onChange={handleChangeEmail}
-        />
+        <InputGroup style={{ ...style, width: "46%", left: "26%" }}>
+          <Input
+            placeholder="E-MAIL"
+            id="emailId"
+            style={{ width: "40%" }}
+            onChange={handleChangeEmailId}
+          />
+          <Input
+            id="address"
+            addonBefore="@"
+            style={{ width: "60%" }}
+            onChange={handleChangeAddress}
+          />
+        </InputGroup>
       </div>
       <div>
-        <button onClick={handleClickConfirm}>완료</button>
+        <Button style={style} onClick={handleClickConfirm}>
+          완료
+        </Button>
       </div>
     </div>
   );
