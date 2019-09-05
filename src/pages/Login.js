@@ -33,7 +33,9 @@ const Login = () => {
       <Button onClick={handleClick} style={{ margin: "3px 3px 3px 3px" }}>
         Login
       </Button>
-      <div>Sign Up</div>
+      <Link to="/signup">
+        <div>Sign Up</div>
+      </Link>
       <Link to="/find">
         <div>Find ID/Password</div>
       </Link>

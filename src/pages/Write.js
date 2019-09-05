@@ -14,8 +14,10 @@ const Write = () => {
   const [journal, setJournal] = useState({
     best: "",
     worst: "",
-    todo: ""
+    todo: "",
+    image: undefined
   });
+
   const { best, worst, todo } = journal;
 
   const fetchDiary = async () => {
@@ -34,8 +36,12 @@ const Write = () => {
   const handleClick = () => {
     // 서버로 post 요청을 보낸다.
   };
+  const setImage = file => {
+    setJournal({ ...journal, image: file });
+  };
   return (
     <div style={{ width: "50%", margin: "0 50px 0 50px" }}>
+
       <InputGroup style={{ width: "70%" }}>
         <Input
           id="best"
