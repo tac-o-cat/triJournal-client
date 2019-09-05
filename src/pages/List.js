@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
 import Diary from "./Diary";
-import LoadingDiary from "./LoadingDiary";
 import { Pagination, Empty } from "antd";
 
 const List = () => {
   const [loading, setLoading] = useState(true);
   const [numOfItems, setNumOfItems] = useState({ minValue: 0, maxValue: 10 });
   const { minValue, maxValue } = numOfItems;
-  const [diaries, setDiaries] = useState([]);
+  const [diaries, setDiaries] = useState([{}]);
   const fetchDiary = async () => {
     const diaries = await fetch("https://koreanjson.com/todos").then(res =>
       res.json()
     );
     setDiaries(diaries);
+    setLoading(false);
   };
   useEffect(() => {
     fetchDiary();
-    setLoading(false);
   }, []);
   const handleChange = page => {
     if (page <= 1) {
@@ -32,17 +31,17 @@ const List = () => {
   return (
     <div>
       {console.log(diaries.length)}
-      {loading ? (
-        <LoadingDiary />
-      ) : diaries.length ? (
-        diaries
-          .slice(minValue, maxValue)
-          .map(diary => <Diary diary={diary} key={diary.id} />)
-      ) : (
-        <Empty
+      {!diaries[0].id && !loading ? ( // 들어온 다이어리에 id가 배정되어 있지 않다면 초기에 스테이트로 설정된 빈 오브젝트이므로
+        <Empty // Empty 컴포넌트 돌려줌.
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           description={<span>첫 번째 일기를 써보세요!</span>}
         />
+      ) : (
+        diaries
+          .slice(minValue, maxValue)
+          .map(diary => (
+            <Diary diary={diary} loading={loading} key={diary.id} />
+          ))
       )}
       <Pagination
         size="small"
