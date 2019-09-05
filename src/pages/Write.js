@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button } from "antd";
+import { Input, Button, Empty } from "antd";
 import setDataToState from "../modules/setDataToState";
 import Diary from "./Diary";
-import LoadingDiary from "./LoadingDiary";
 
 const Write = () => {
   const style = {
@@ -10,7 +9,7 @@ const Write = () => {
   };
   const InputGroup = Input.Group;
   const [loading, setLoading] = useState(true);
-  const [diaries, setDiaries] = useState([]);
+  const [diaries, setDiaries] = useState([{}]);
   const [journal, setJournal] = useState({
     best: "",
     worst: "",
@@ -23,10 +22,10 @@ const Write = () => {
       res.json()
     );
     setDiaries(diaries);
+    setLoading(false);
   };
   useEffect(() => {
     fetchDiary();
-    setLoading(false);
   }, []);
   const handleChange = e => {
     setDataToState(e.target.id, setJournal, journal);
@@ -63,12 +62,17 @@ const Write = () => {
       >
         작성
       </Button>
-      {loading ? (
-        <LoadingDiary style={style} />
+      {!diaries[0].id && !loading ? ( // 들어온 다이어리에 id가 배정되어 있지 않다면 초기에 스테이트로 설정된 빈 오브젝트이므로
+        <Empty // Empty 컴포넌트 돌려줌.
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={<span>첫 번째 일기를 써보세요!</span>}
+        />
       ) : (
         diaries
           .slice(0, 10)
-          .map(diary => <Diary diary={diary} key={diary.id} />)
+          .map(diary => (
+            <Diary diary={diary} loading={loading} key={diary.id} />
+          ))
       )}
     </div>
   );
