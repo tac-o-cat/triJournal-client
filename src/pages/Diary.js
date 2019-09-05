@@ -7,7 +7,7 @@ const Diary = props => {
   const date = props.diary.createdAt.slice(0, 10);
   return (
     <Card
-      style={{ width: 400 }}
+      style={{ width: 400, margin: "10px 10px 10px 10px" }}
       loading={props.loading}
       cover={
         props.diary.image ? (
