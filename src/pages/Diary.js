@@ -4,10 +4,9 @@ import { Card, Icon } from "antd";
 
 const Diary = props => {
   const { Meta } = Card;
-  const date = props.diary.createdAt.slice(0, 10);
   return (
     <Card
-      style={{ width: 400 }}
+      style={{ width: 400, margin: "1% 1% 1% 1%" }}
       loading={props.loading}
       cover={
         props.diary.image ? (
@@ -26,7 +25,7 @@ const Diary = props => {
         <Meta />
       ) : (
         <Meta
-          title={date}
+          title={props.diary.createdAt.slice(0, 10)}
           description={
             <div>
               <p>1. {props.diary.title}</p>
