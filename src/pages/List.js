@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Diary from "./Diary";
 import LoadingDiary from "./LoadingDiary";
-import { Pagination } from "antd";
+import { Pagination, Empty } from "antd";
 
 const List = () => {
   const [loading, setLoading] = useState(true);
@@ -34,10 +34,15 @@ const List = () => {
       {console.log(diaries.length)}
       {loading ? (
         <LoadingDiary />
-      ) : (
+      ) : diaries.length ? (
         diaries
           .slice(minValue, maxValue)
           .map(diary => <Diary diary={diary} key={diary.id} />)
+      ) : (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={<span>첫 번째 일기를 써보세요!</span>}
+        />
       )}
       <Pagination
         size="small"
