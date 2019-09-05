@@ -13,7 +13,7 @@ const Write = () => {
     todo: "",
     image: undefined
   });
-  const { best, worst, todo } = journal;
+  const { best, worst, todo, image } = journal;
   const handleChange = e => {
     setDataToState(e.target.id, setJournal, journal);
   };
@@ -50,7 +50,7 @@ const Write = () => {
       >
         작성
       </Button>
-      <AttachImage setImage={setImage} />
+      <AttachImage setImage={setImage} currentImage={image} />
     </div>
   );
 };
