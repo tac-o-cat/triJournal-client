@@ -22,15 +22,16 @@ const List = () => {
     if (page <= 1) {
       setNumOfItems({
         minValue: 0,
-        maxValue: 9
+        maxValue: 10
       });
     }
     if (page > 1) {
-      setNumOfItems({ minValue: maxValue, maxValue: page * 10 });
+      setNumOfItems({ minValue: (page - 1) * 10, maxValue: page * 10 });
     }
   };
   return (
     <div>
+      {console.log(diaries.length)}
       {loading ? (
         <LoadingDiary />
       ) : (
@@ -41,7 +42,7 @@ const List = () => {
       <Pagination
         size="small"
         hideOnSinglePage={true}
-        pageSize={5}
+        pageSize={10}
         onChange={handleChange}
         total={diaries.length}
       ></Pagination>
