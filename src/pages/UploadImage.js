@@ -1,7 +1,7 @@
 import React from "react";
 import { Upload, Icon, Button } from "antd";
 
-const AttachImage = props => {
+const UploadImage = props => {
   const img = {
     action: "//jsonplaceholder.typicode.com/posts/", //사진을 올릴 URL
     listType: "picture", // 프리뷰 모양
@@ -47,4 +47,4 @@ const AttachImage = props => {
   );
 };
 
-export default AttachImage;
+export default UploadImage;

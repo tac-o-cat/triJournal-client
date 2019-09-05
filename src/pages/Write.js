@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Input, Button } from "antd";
 import setDataToState from "../modules/setDataToState";
-import AttachImage from "./AttachImage";
+import UploadImage from "./UploadImage";
 
 const Write = () => {
   const style = {
@@ -51,7 +51,7 @@ const Write = () => {
         >
           작성
         </Button>
-        <AttachImage setImage={setImage} currentImage={image} />
+        <UploadImage setImage={setImage} currentImage={image} />
       </div>
     </div>
   );
