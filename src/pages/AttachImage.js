@@ -36,14 +36,14 @@ const AttachImage = props => {
     }
   };
   return (
-    <div>
+    <span>
       {/* eslint-disable-next-line react/prop-types*/}
       <Upload {...img} fileList={props.currentImage}>
         <Button>
           <Icon type="upload" /> Upload
         </Button>
       </Upload>
-    </div>
+    </span>
   );
 };
 

@@ -43,14 +43,16 @@ const Write = () => {
         style={style}
         placeholder="내일 할 일"
       />
-      <Button
-        onClick={handleClick}
-        style={style}
-        disabled={best.length && worst.length && todo.length ? false : true}
-      >
-        작성
-      </Button>
-      <AttachImage setImage={setImage} currentImage={image} />
+      <div style={{ textAlign: "right" }}>
+        <Button
+          onClick={handleClick}
+          style={style}
+          disabled={best.length && worst.length && todo.length ? false : true}
+        >
+          작성
+        </Button>
+        <AttachImage setImage={setImage} currentImage={image} />
+      </div>
     </div>
   );
 };
