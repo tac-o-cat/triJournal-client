@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Input, Button } from "antd";
 import setDataToState from "../modules/setDataToState";
+import UploadImage from "./UploadImage";
 
 const Write = () => {
   const style = {
@@ -9,15 +10,18 @@ const Write = () => {
   const [journal, setJournal] = useState({
     best: "",
     worst: "",
-    todo: ""
+    todo: "",
+    image: undefined
   });
-  const { best, worst, todo } = journal;
-
+  const { best, worst, todo, image } = journal;
   const handleChange = e => {
     setDataToState(e.target.id, setJournal, journal);
   };
   const handleClick = () => {
     // 서버로 post 요청을 보낸다.
+  };
+  const setImage = file => {
+    setJournal({ ...journal, image: file });
   };
   return (
     <div style={{ width: "50%", margin: "0 50px 0 50px" }}>
@@ -39,13 +43,16 @@ const Write = () => {
         style={style}
         placeholder="내일 할 일"
       />
-      <Button
-        onClick={handleClick}
-        style={style}
-        disabled={best.length && worst.length && todo.length ? false : true}
-      >
-        작성
-      </Button>
+      <div style={{ textAlign: "right" }}>
+        <Button
+          onClick={handleClick}
+          style={style}
+          disabled={best.length && worst.length && todo.length ? false : true}
+        >
+          작성
+        </Button>
+        <UploadImage setImage={setImage} currentImage={image} />
+      </div>
     </div>
   );
 };
