@@ -27,7 +27,8 @@ const FindId = () => {
         } else {
           message.innerHTML = "해당 이메일로 가입한 아이디가 없습니다.";
         }
-      });
+      })
+      .catch(err => console.error(err));
     // email을 body에 담아 서버에 포스트 요청을 보낸다.
     // id가 리스폰스로 오면, 해당 응답을 message div에 출력한다.
   };
