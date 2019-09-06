@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { Form, Icon, Input, Button } from "antd";
+import { Form, Input, Button } from "antd";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 const InputGroup = Input.Group;
 
@@ -54,7 +54,6 @@ class FindId extends React.Component {
             <Input
               id="emailId"
               style={{ width: "45%" }}
-              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
               placeholder="e-mail ID"
               addonAfter="@"
             />
