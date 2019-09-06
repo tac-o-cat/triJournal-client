@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import { Button, Input } from "antd";
 
-const SignUp = () => {
+const SignUp = ({ history }) => {
   const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
   const [state, setState] = useState({
     id: "",
@@ -26,7 +27,10 @@ const SignUp = () => {
       headers: {
         "Content-Type": "application/json"
       }
-    }).then(alert("가입 완료"));
+    }).then(() => {
+      alert("가입 완료");
+      history.push("/login");
+    });
   };
 
   const handleChangeEmailId = () => {
@@ -120,7 +124,7 @@ const SignUp = () => {
         position: "absolute",
         top: "30%",
         left: "50%",
-        width: "50%",
+        width: "100%",
         transform: "translate(-50%, -50%)",
         textAlign: "center"
       }}
