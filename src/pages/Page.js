@@ -4,6 +4,7 @@ import { Layout } from "antd";
 import Write from "./Write";
 import NavBar from "./NavBar";
 import List from "./List";
+import MyInfo from "./MyInfo";
 
 const Page = () => {
   const { Header, Content } = Layout;
@@ -17,6 +18,7 @@ const Page = () => {
         <Switch>
           <Route path="/page/write" component={Write} />
           <Route path="/page/list" component={List} />
+          <Route path="/page/myInfo" component={MyInfo} />
         </Switch>
       </Content>
     </Router>
