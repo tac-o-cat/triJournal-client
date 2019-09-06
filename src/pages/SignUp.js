@@ -1,7 +1,9 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import { Button, Input } from "antd";
 
-const SignUp = () => {
+const SignUp = ({ history }) => {
+  const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
   const [state, setState] = useState({
     id: "",
     password: "",
@@ -13,18 +15,22 @@ const SignUp = () => {
   const InputGroup = Input.Group;
   const style = { margin: "3px 3px 3px 3px" };
   const handleClickConfirm = () => {
-    if (
-      id.length > 0 &&
-      password.length > 0 &&
-      email.length > 0 &&
-      isIdUnique &&
-      pwCheck === true
-    ) {
-      //서버로 user의 정보를 보낸다.
-      alert("전송완료");
-    } else {
-      alert("확인해주세요");
-    }
+    let userInfo = {
+      username: id,
+      email: email.id + "@" + email.address,
+      password: password,
+      userProfilePic: undefined
+    };
+    fetch(`${API_HOST_URL}/users/signUp`, {
+      method: "POST",
+      body: JSON.stringify(userInfo),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(() => {
+      alert("가입 완료");
+      history.push("/login");
+    });
   };
 
   const handleChangeEmailId = () => {
@@ -44,11 +50,30 @@ const SignUp = () => {
   };
 
   const handleClickIdCheck = () => {
-    //서버에 input.value를 body로 post요청을 보내면 서버에서 중복여부에 대한 res를 보내준다.
-    //response 값에 따라서 중복이면 이미 있는 id라는 메세지를 dom에서 띄워주고
-    //중복이 아니면 id의 state값을 input.value로 설정
-    //isIdunique도 true로 설정
-    //dom에서도 중복표시에 대한 값을 나타내준다.
+    let inputId = document.getElementById("inputId").value;
+    let username = { username: inputId };
+    fetch(`${API_HOST_URL}/users/checkId`, {
+      method: "POST",
+      body: JSON.stringify(username),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(res => {
+        let message = document.getElementById("inputIdCheck");
+        if (!res.isName) {
+          setState({
+            ...state,
+            id: inputId,
+            isIdUnique: true
+          });
+          message.innerHTML = "아이디를 사용하실 수 있습니다.";
+        } else {
+          message.innerHTML = "이미 존재하는 아이디입니다.";
+        }
+      })
+      .catch(err => console.error(err));
   };
 
   const handleChangeId = () => {
@@ -99,7 +124,7 @@ const SignUp = () => {
         position: "absolute",
         top: "30%",
         left: "50%",
-        width: "50%",
+        width: "100%",
         transform: "translate(-50%, -50%)",
         textAlign: "center"
       }}
@@ -153,7 +178,20 @@ const SignUp = () => {
         </InputGroup>
       </div>
       <div>
-        <Button style={style} onClick={handleClickConfirm}>
+        <Button
+          style={style}
+          onClick={handleClickConfirm}
+          disabled={
+            id.length > 0 &&
+            password.length > 0 &&
+            email.id.length > 0 &&
+            email.address.length > 0 &&
+            isIdUnique &&
+            pwCheck
+              ? false
+              : true
+          }
+        >
           완료
         </Button>
       </div>
