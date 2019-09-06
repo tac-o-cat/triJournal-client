@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
-import FindPw from "./FindPw";
+import WrappedFindPw from "./FindPw";
 import WrappedFindId from "./FindId";
 
 // eslint-disable-next-line react/prop-types
@@ -36,7 +36,7 @@ const FindIdPw = ({ history }) => {
       </div>
       <Switch>
         <Route path="/find/id" component={WrappedFindId} />
-        <Route path="/find/password" component={FindPw} />
+        <Route path="/find/password" component={WrappedFindPw} />
       </Switch>
     </Router>
   );
