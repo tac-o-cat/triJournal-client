@@ -1,16 +1,18 @@
-import React, { useState } from "react";
-import { Input, Button } from "antd";
-import setDataToState from "../modules/setDataToState";
+/* eslint-disable react/prop-types */
+import React from "react";
+import { Form, Icon, Input, Button } from "antd";
+const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
+const InputGroup = Input.Group;
 
-const FindId = () => {
-  const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
-  const InputGroup = Input.Group;
-  const [email, setEmail] = useState({ emailId: "", address: "" });
-  const { emailId, address } = email;
-  const handleChange = e => {
-    setDataToState(e.target.id, setEmail, email);
-  };
-  const handleClick = () => {
+class FindId extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick() {
+    const form = this.props.form;
+    let emailId = form.getFieldValue("emailId");
+    let address = form.getFieldValue("address");
     let email = { email: `${emailId}@${address}` };
     fetch(`${API_HOST_URL}/users/findId`, {
       method: "POST",
@@ -29,40 +31,56 @@ const FindId = () => {
         }
       })
       .catch(err => console.error(err));
-    // email을 body에 담아 서버에 포스트 요청을 보낸다.
-    // id가 리스폰스로 오면, 해당 응답을 message div에 출력한다.
-  };
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: "45%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        textAlign: "center"
-      }}
-    >
-      <div style={{ margin: "3px 3px 3px 3px" }}>이메일을 입력해 주세요.</div>
-      <InputGroup compact style={{ margin: "3px 3px 3px 3px" }}>
-        <Input
-          id="emailId"
-          style={{ width: "45%" }}
-          addonAfter="@"
-          onChange={handleChange}
-        />
-        <Input id="address" style={{ width: "55%" }} onChange={handleChange} />
-      </InputGroup>
-      <div id="message"></div>
-      <Button
-        type="primary"
-        onClick={handleClick}
-        disabled={emailId.length && address.length ? false : true}
-        style={{ margin: "3px 3px 3px 3px" }}
+  }
+  render() {
+    const form = this.props.form;
+    return (
+      <Form
+        className="login-form"
+        style={{
+          position: "absolute",
+          top: "45%",
+          left: "50%",
+          width: "80%",
+          transform: "translate(-50%, -50%)",
+          textAlign: "center"
+        }}
       >
-        완료
-      </Button>
-    </div>
-  );
-};
+        <div style={{ margin: "3px 3px 3px 3px" }}>이메일을 입력해 주세요.</div>
+        <InputGroup compact style={{ margin: "3px 3px 3px 3px" }}>
+          {form.getFieldDecorator("emailId", {
+            rules: [{ required: true, message: "Please input your username!" }]
+          })(
+            <Input
+              id="emailId"
+              style={{ width: "45%" }}
+              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+              placeholder="e-mail ID"
+              addonAfter="@"
+            />
+          )}
+          {form.getFieldDecorator("address", {
+            rules: [{ required: true, message: "Please input your username!" }]
+          })(<Input id="address" style={{ width: "55%" }} />)}
+        </InputGroup>
+        <div id="message"></div>
+        <Button
+          type="primary"
+          onClick={this.handleClick}
+          disabled={
+            form.isFieldTouched("emailId") && form.isFieldTouched("address")
+              ? false
+              : true
+          }
+          style={{ margin: "3px 3px 3px 3px" }}
+        >
+          완료
+        </Button>
+      </Form>
+    );
+  }
+}
 
-export default FindId;
+const WrappedFindId = Form.create({ name: "find_id" })(FindId);
+
+export default WrappedFindId;
