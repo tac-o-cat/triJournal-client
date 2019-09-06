@@ -1,10 +1,14 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Sidebar from "react-sidebar";
+import { Menu, Icon, Button } from "antd";
+
+const { SubMenu } = Menu;
 
 const NavBar = () => {
   const [menuOpenState, setMenuOpenState] = useState({
-    sidebarOpen: true,
+    sidebarOpen: false,
     logout: false
   });
   const { sidebarOpen } = menuOpenState;
@@ -27,40 +31,79 @@ const NavBar = () => {
       logout: true
     });
   };
+
   return (
     <Sidebar
       sidebar={
         <div>
           <div>
             <h3>
-              환영합니다, Obok님!
-              <button onClick={handleClickLogout}>Logout</button>
+              <p
+                style={{
+                  margin: "0 250px 0 10px",
+                  float: "left",
+                  overflow: "hidden"
+                }}
+              >
+                환영합니다, Obok님!
+              </p>
+              <Button
+                type="primary"
+                onClick={handleClickLogout}
+                style={{ float: "left", margin: "15px 0 0 0 " }}
+              >
+                Logout
+              </Button>
             </h3>
           </div>
           <div>
-            <NavLink exact to="/write">
-              일기쓰기
-            </NavLink>
-            <NavLink exact to="/list">
-              리스트
-            </NavLink>
-            <NavLink exact to="/search">
-              검색
-            </NavLink>
-            <NavLink exact to="/favorite">
-              즐겨찾기
-            </NavLink>
-            <NavLink exact to="/myInfo">
-              마이페이지
-            </NavLink>
+            <Menu mode="inline" defaultSelectedKeys={["1"]}>
+              <Menu.Item key="1">
+                <NavLink to="/page/write">
+                  <p>일기쓰기</p>
+                </NavLink>
+              </Menu.Item>
+            </Menu>
+            <Menu mode="inline" defaultSelectedKeys={["1"]}>
+              <Menu.Item key="1">
+                <NavLink to="/page/list">
+                  <p>리스트</p>
+                </NavLink>
+              </Menu.Item>
+            </Menu>
+            <Menu mode="inline" defaultSelectedKeys={["1"]}>
+              <Menu.Item key="1">
+                <NavLink to="/page/search">
+                  <p>검색</p>
+                </NavLink>
+              </Menu.Item>
+            </Menu>
+            <Menu mode="inline" defaultSelectedKeys={["1"]}>
+              <Menu.Item key="1">
+                <NavLink to="/page/favorite">
+                  <p>즐겨찾기</p>
+                </NavLink>
+              </Menu.Item>
+            </Menu>
+            <Menu mode="inline" defaultSelectedKeys={["1"]}>
+              <Menu.Item key="1">
+                <NavLink to="/page/myInfo">
+                  <p>마이페이지</p>
+                </NavLink>
+              </Menu.Item>
+            </Menu>
           </div>
         </div>
       }
       open={sidebarOpen}
       onSetOpen={onSetSidebarOpen}
-      styles={{ sidebar: { background: "white", width: "500px" } }}
+      styles={{
+        sidebar: {
+          zIndex: sidebarOpen ? "5" : "-1"
+        }
+      }}
     >
-      <button onClick={() => onSetSidebarOpen(true)}>Open sidebar</button>
+      <Icon type="menu" onClick={() => onSetSidebarOpen(true)} />
     </Sidebar>
   );
 };
