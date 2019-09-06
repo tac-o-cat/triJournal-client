@@ -35,26 +35,39 @@ const NavBar = () => {
   return (
     <Sidebar
       sidebar={
-        <div>
-          <div>
+        <div
+          style={{
+            height: "100%",
+            background: "#fff"
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              height: "10%",
+              overflow: "hidden"
+            }}
+          >
             <h3>
               <p
                 style={{
-                  margin: "0 250px 0 10px",
+                  width: "70%",
                   float: "left",
-                  overflow: "hidden"
+                  display: "inline-block",
+                  paddingLeft: "2%",
+                  marginTop: "1%"
                 }}
               >
                 환영합니다, Obok님!
               </p>
-              <Button
-                type="primary"
-                onClick={handleClickLogout}
-                style={{ float: "left", margin: "15px 0 0 0 " }}
-              >
-                Logout
-              </Button>
             </h3>
+            <Button
+              type="primary"
+              onClick={handleClickLogout}
+              style={{ float: "left", marginTop: "2.5%", marginLeft: "5%" }}
+            >
+              Logout
+            </Button>
           </div>
           <div>
             <Menu mode="inline" defaultSelectedKeys={["1"]}>
@@ -99,7 +112,8 @@ const NavBar = () => {
       onSetOpen={onSetSidebarOpen}
       styles={{
         sidebar: {
-          zIndex: sidebarOpen ? "5" : "-1"
+          zIndex: sidebarOpen ? "5" : "-1",
+          width: "60%"
         }
       }}
     >
