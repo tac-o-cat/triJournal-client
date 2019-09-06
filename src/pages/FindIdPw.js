@@ -6,7 +6,6 @@ import WrappedFindId from "./FindId";
 
 // eslint-disable-next-line react/prop-types
 const FindIdPw = ({ history }) => {
-  console.log(history);
   return (
     <Router>
       <div
