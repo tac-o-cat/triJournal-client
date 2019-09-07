@@ -18,7 +18,7 @@ class Login extends React.Component {
       username: username,
       password: password
     };
-    console.log(body);
+    console.log(this.props);
     fetch(`${API_HOST_URL}/sign/signin`, {
       method: "POST",
       body: JSON.stringify(body),
@@ -29,7 +29,10 @@ class Login extends React.Component {
       .then(res => res.json())
       .then(res => {
         res.isLogIn
-          ? this.props.history.push("/page/write")
+          ? this.props.history.push({
+              pathname: "/page/write",
+              state: { username: form.getFieldValue("id") }
+            })
           : alert("아이디, 비밀번호를 확인하세요");
       })
       .catch(err => console.error(err));
