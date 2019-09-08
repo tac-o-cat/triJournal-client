@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import { Input, Button, Empty } from "antd";
-import setDataToState from "../modules/setDataToState";
+import helpers from "../modules/helpers";
 import Diary from "./Diary";
 import UploadImage from "./UploadImage";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
@@ -12,7 +12,7 @@ const Write = props => {
   };
   const InputGroup = Input.Group;
   const [loading, setLoading] = useState(true);
-  const [diaries, setDiaries] = useState([{}]);
+  const [diaries, setDiaries] = useState([{ init: true }]);
   const [journal, setJournal] = useState({
     best: "",
     worst: "",
@@ -25,7 +25,7 @@ const Write = props => {
       let writtenDaries = await fetch(
         `${API_HOST_URL}/posts/${props.username}`
       ).then(res => res.json());
-      if (Array.isArray(writtenDaries)) setDiaries(writtenDaries);
+      setDiaries(writtenDaries);
       setLoading(false);
     }
   };
@@ -33,7 +33,7 @@ const Write = props => {
     fetchDiary(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const handleChange = e => {
-    setDataToState(e.target.id, setJournal, journal);
+    helpers.setDataToState(e.target.id, setJournal, journal);
   };
   const handleClick = async () => {
     //서버로 post 요청을 보낸다.
@@ -52,10 +52,33 @@ const Write = props => {
         "Content-Type": "application/json"
       }
     });
-    let loadNewDiary = await fetch(`${API_HOST_URL}/posts/mini1`).then(res =>
-      res.json()
-    );
+    let loadNewDiary = await fetch(
+      `${API_HOST_URL}/posts/${props.username}`
+    ).then(res => res.json());
     setDiaries([...diaries, loadNewDiary[loadNewDiary.length - 1]]);
+  };
+  const deleteDiary = async (username, postId) => {
+    await fetch(`${API_HOST_URL}/posts/${username}/${postId}`, {
+      method: "DELETE"
+    });
+    let loadNewDiary = await fetch(`${API_HOST_URL}/posts/${username}`).then(
+      res => res.json()
+    );
+    setDiaries(loadNewDiary);
+  };
+  const editDiary = async (postId, body) => {
+    await fetch(`${API_HOST_URL}/posts/${props.username}/${postId}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json());
+
+    let loadNewDiary = await fetch(
+      `${API_HOST_URL}/posts/${props.username}`
+    ).then(res => res.json());
+    setDiaries(loadNewDiary);
   };
   const setImage = file => {
     setJournal({ ...journal, image: file });
@@ -90,7 +113,7 @@ const Write = props => {
         작성
       </Button>
       <UploadImage setImage={setImage} currentImage={image} />
-      {!diaries[0].id && !loading ? ( // 들어온 다이어리에 id가 없다면 초기에 설정해준 빈 오브젝트이므로
+      {!diaries.length && !loading ? ( // 들어온 다이어리에 id가 없다면 초기에 설정해준 빈 오브젝트이므로
         <Empty // Empty를 랜더한다.
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           description={<span>첫 번째 일기를 써보세요!</span>}
@@ -102,11 +125,11 @@ const Write = props => {
           .map((diary, i) => {
             return (
               <Diary
-                username={props.username}
                 diary={diary}
                 loading={loading}
                 key={i}
-                //              deleteDiary={deleteDiary}
+                deleteDiary={deleteDiary}
+                editDiary={editDiary}
               />
             );
           })
