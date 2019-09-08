@@ -22,9 +22,9 @@ const Write = props => {
   const { best, worst, todo, image } = journal;
   const fetchDiary = async () => {
     if (props.username) {
-      let writtenDaries = await fetch(`${API_HOST_URL}/posts/mini1`)
-        .then(res => res.json())
-        .then(res => console.log(res));
+      let writtenDaries = await fetch(`${API_HOST_URL}/posts/mini1`).then(res =>
+        res.json()
+      );
       if (Array.isArray(writtenDaries)) setDiaries(writtenDaries);
       setLoading(false);
     }
@@ -94,11 +94,10 @@ const Write = props => {
           description={<span>첫 번째 일기를 써보세요!</span>}
         />
       ) : (
-        diaries
-          .slice(0, 10)
-          .map(diary => (
-            <Diary diary={diary} loading={loading} key={diary.id} />
-          ))
+        diaries.slice(0, 10).map(diary => {
+          console.log(diary);
+          return <Diary diary={diary} loading={loading} key={diary.id} />;
+        })
       )}
     </div>
   );

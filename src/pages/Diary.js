@@ -28,9 +28,9 @@ const Diary = props => {
           title={props.diary.createdAt.slice(0, 10)}
           description={
             <div>
-              <p>1. {props.diary.title}</p>
-              <p>2. {props.diary.title}</p>
-              <p>3. {props.diary.title}</p>
+              <p>1. {props.diary.best}</p>
+              <p>2. {props.diary.worst}</p>
+              <p>3. {props.diary.todo}</p>
             </div>
           }
         />
