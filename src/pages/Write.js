@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import { Input, Button, Empty } from "antd";
 import setDataToState from "../modules/setDataToState";
 import Diary from "./Diary";
 import UploadImage from "./UploadImage";
+const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
-const Write = () => {
+const Write = props => {
   const style = {
     margin: "3px 3px 3px 3px"
   };
@@ -19,31 +21,39 @@ const Write = () => {
   });
 
   const { best, worst, todo, image } = journal;
-
   const fetchDiary = async () => {
-    // const diaries = await fetch("https://koreanjson.com/todos").then(res =>
-    //   res.json()
-    // );
-    const diaries = [
-      {
-        id: 1,
-        best: "ㅇㅋ",
-        worst: "으악",
-        todo: "밥먹기",
-        createdAt: "1234567891"
-      }
-    ];
-    setDiaries(diaries);
-    setLoading(false);
+    if (props.username) {
+      let writtenDaries = await fetch(`${API_HOST_URL}/posts/mini1`).then(res =>
+        res.json()
+      );
+      if (Array.isArray(writtenDaries)) setDiaries(writtenDaries);
+      setLoading(false);
+    }
   };
   useEffect(() => {
     fetchDiary();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const handleChange = e => {
     setDataToState(e.target.id, setJournal, journal);
   };
   const handleClick = () => {
     // 서버로 post 요청을 보낸다.
+    let diary = {
+      best: best,
+      worst: worst,
+      todo: todo,
+      longLog: undefined,
+      picUrl: image,
+      userName: props.username
+    };
+    fetch(`${API_HOST_URL}/posts/${props.username}`, {
+      method: "POST",
+      body: JSON.stringify(diary),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json());
   };
   const setImage = file => {
     setJournal({ ...journal, image: file });
