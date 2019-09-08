@@ -8,8 +8,7 @@ const Diary = props => {
   const [isVisible, setIsVisible] = useState(false);
   const handleConfirmDelete = () => {
     message.success("삭제 완료");
-    //'/posts/:userName/:postId'로 delete 요청
-    // 후에 다시 get요청 받아오기.
+    props.deleteDiary(props.diary.userName, props.diary.id);
   };
   const handleCancelDelete = () => {
     message.error("삭제 취소");
@@ -20,7 +19,6 @@ const Diary = props => {
   const hideModal = () => {
     setIsVisible(false);
   };
-
   return (
     <Card
       style={{ width: 400, margin: "1% 1% 1% 1%" }}
@@ -61,7 +59,12 @@ const Diary = props => {
           }
         />
       )}
-      <Edit isVisible={isVisible} hideModal={hideModal} diary={props.diary} />
+      <Edit
+        isVisible={isVisible}
+        hideModal={hideModal}
+        diary={props.diary}
+        editDiary={props.editDiary}
+      />
     </Card>
   );
 };
