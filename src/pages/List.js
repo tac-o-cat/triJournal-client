@@ -39,9 +39,7 @@ const List = () => {
       ) : (
         diaries
           .slice(minValue, maxValue)
-          .map(diary => (
-            <Diary diary={diary} loading={loading} key={diary.id} />
-          ))
+          .map((diary, i) => <Diary diary={diary} loading={loading} key={i} />)
       )}
       <Pagination
         size="small"

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Input, Button, Empty } from "antd";
 import setDataToState from "../modules/setDataToState";
 import Diary from "./Diary";
+import UploadImage from "./UploadImage";
 
 const Write = () => {
   const style = {
@@ -17,12 +18,21 @@ const Write = () => {
     image: undefined
   });
 
-  const { best, worst, todo } = journal;
+  const { best, worst, todo, image } = journal;
 
   const fetchDiary = async () => {
-    const diaries = await fetch("https://koreanjson.com/todos").then(res =>
-      res.json()
-    );
+    // const diaries = await fetch("https://koreanjson.com/todos").then(res =>
+    //   res.json()
+    // );
+    const diaries = [
+      {
+        id: 1,
+        best: "ㅇㅋ",
+        worst: "으악",
+        todo: "밥먹기",
+        createdAt: "1234567891"
+      }
+    ];
     setDiaries(diaries);
     setLoading(false);
   };
@@ -40,7 +50,6 @@ const Write = () => {
   };
   return (
     <div style={{ width: "50%", margin: "0 50px 0 50px" }}>
-
       <InputGroup style={{ width: "70%" }}>
         <Input
           id="best"
@@ -68,6 +77,7 @@ const Write = () => {
       >
         작성
       </Button>
+      <UploadImage setImage={setImage} currentImage={image} />
       {!diaries[0].id && !loading ? ( // 들어온 다이어리에 id가 배정되어 있지 않다면 초기에 스테이트로 설정된 빈 오브젝트이므로
         <Empty // Empty 컴포넌트 돌려줌.
           image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -76,9 +86,7 @@ const Write = () => {
       ) : (
         diaries
           .slice(0, 10)
-          .map(diary => (
-            <Diary diary={diary} loading={loading} key={diary.id} />
-          ))
+          .map((diary, i) => <Diary diary={diary} loading={loading} key={i} />)
       )}
     </div>
   );
