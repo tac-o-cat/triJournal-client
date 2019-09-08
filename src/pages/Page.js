@@ -14,11 +14,14 @@ const Page = props => {
   useEffect(() => {
     let isSubscribed = true;
 
-    fetch(`${API_HOST_URL}/users/${props.location.state.username}`)
+    fetch(`${API_HOST_URL}/users/${props.location.state.username}`, {
+      credentials: "include"
+    })
       .then(res => res.json())
       .then(res => (isSubscribed ? setCurrentUser(res) : null));
     return () => (isSubscribed = false);
-  }, [props.location.state.username]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Router>
@@ -32,7 +35,10 @@ const Page = props => {
             path="/page/write"
             component={() => <Write username={currentUser.username} />}
           />
-          <Route path="/page/list" component={List} />
+          <Route
+            path="/page/list"
+            component={() => <List username={currentUser.username} />}
+          />
           <Route path="/page/myInfo" component={MyInfo} />
         </Switch>
       </Content>
