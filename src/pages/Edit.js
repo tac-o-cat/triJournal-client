@@ -7,11 +7,17 @@ const Edit = props => {
     // 모달창을 닫는다.
     props.hideModal();
     // 모달 창의 수정된 value를 가져온다.
-    // let editBest = document.getElementById("editBest").value;
-    // let editWorst = document.getElementById("editWorst").value;
-    // let editTodo = document.getElementById("editTodo").value;
+    let editBest = document.getElementById("editBest").value;
+    let editWorst = document.getElementById("editWorst").value;
+    let editTodo = document.getElementById("editTodo").value;
     // 수정된 value를 서버로 보낸다.
-    // 수정 사항을 타임라인에 어떻게 반영?
+    let body = {
+      ...props.diary,
+      best: editBest,
+      worst: editWorst,
+      todo: editTodo
+    };
+    props.editDiary(props.diary.id, body);
   };
 
   const handleCancel = () => {
