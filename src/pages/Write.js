@@ -56,12 +56,6 @@ const Write = props => {
       res.json()
     );
     setDiaries([...diaries, loadNewDiary[loadNewDiary.length - 1]]);
-    let bestInput = document.getElementById("best");
-    let worstInput = document.getElementById("worst");
-    let todoInput = document.getElementById("todo");
-    bestInput.value = "";
-    worstInput.value = "";
-    todoInput.value = "";
   };
   const setImage = file => {
     setJournal({ ...journal, image: file });
@@ -102,18 +96,20 @@ const Write = props => {
           description={<span>첫 번째 일기를 써보세요!</span>}
         />
       ) : (
-        diaries.slice(diaries.length - 10).map((diary, i, tenDiaries) => {
-          console.log(tenDiaries);
-          let diaryIndex = tenDiaries.length - 1;
-          console.log(diaryIndex);
-          return (
-            <Diary
-              diary={tenDiaries[diaryIndex - i]}
-              loading={loading}
-              key={i}
-            />
-          );
-        })
+        diaries
+          .sort((a, b) => b.id - a.id)
+          .slice(0, 10)
+          .map((diary, i) => {
+            return (
+              <Diary
+                username={props.username}
+                diary={diary}
+                loading={loading}
+                key={i}
+                //              deleteDiary={deleteDiary}
+              />
+            );
+          })
       )}
     </div>
   );
