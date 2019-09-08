@@ -17,7 +17,6 @@ class Login extends React.Component {
       username: username,
       password: password
     };
-    console.log(this.props);
     fetch(`${API_HOST_URL}/sign/signin`, {
       method: "POST",
       body: JSON.stringify(body),
