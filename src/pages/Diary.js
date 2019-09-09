@@ -4,6 +4,7 @@ import { Card, Icon, Popconfirm, message } from "antd";
 import Edit from "./Edit";
 
 const Diary = props => {
+  console.log(props);
   const { Meta } = Card;
   const [isVisible, setIsVisible] = useState(false);
   const handleConfirmDelete = () => {
