@@ -2,35 +2,38 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
-const InputGroup = Input.Group;
 
 class FindId extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
   }
-  handleClick() {
+  handleClick(e) {
+    e.preventDefault();
     const form = this.props.form;
-    let emailId = form.getFieldValue("emailId");
-    let address = form.getFieldValue("address");
-    let email = { email: `${emailId}@${address}` };
-    fetch(`${API_HOST_URL}/users/findId`, {
-      method: "POST",
-      body: JSON.stringify(email),
-      headers: {
-        "Content-Type": "application/json"
+    form.validateFields((err, values) => {
+      if (!err) {
+        let email = { email: `${values.email}` };
+        fetch(`${API_HOST_URL}/users/findId`, {
+          method: "POST",
+          body: JSON.stringify(email),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+          .then(res => res.json())
+          .then(res => {
+            let message = document.getElementById("message");
+            console.log(message);
+            if (res.username) {
+              message.innerHTML = `회원님의 아이디는 ${res.username}입니다.`;
+            } else {
+              message.innerHTML = "해당 이메일로 가입한 아이디가 없습니다.";
+            }
+          })
+          .catch(err => console.error(err));
       }
-    })
-      .then(res => res.json())
-      .then(res => {
-        let message = document.getElementById("message");
-        if (res.username) {
-          message.innerHTML = `회원님의 아이디는 ${res.username}입니다.`;
-        } else {
-          message.innerHTML = "해당 이메일로 가입한 아이디가 없습니다.";
-        }
-      })
-      .catch(err => console.error(err));
+    });
   }
   render() {
     const form = this.props.form;
@@ -45,36 +48,30 @@ class FindId extends React.Component {
           transform: "translate(-50%, -50%)",
           textAlign: "center"
         }}
+        onSubmit={this.handleClick}
       >
-        <div style={{ margin: "3px 3px 3px 3px" }}>이메일을 입력해 주세요.</div>
-        <InputGroup compact style={{ margin: "3px 3px 3px 3px" }}>
-          {form.getFieldDecorator("emailId", {
-            rules: [{ required: true, message: "Please input your username!" }]
-          })(
-            <Input
-              id="emailId"
-              style={{ width: "45%" }}
-              placeholder="e-mail ID"
-              addonAfter="@"
-            />
-          )}
-          {form.getFieldDecorator("address", {
-            rules: [{ required: true, message: "Please input your username!" }]
-          })(<Input id="address" style={{ width: "55%" }} />)}
-        </InputGroup>
-        <div id="message"></div>
-        <Button
-          type="primary"
-          onClick={this.handleClick}
-          disabled={
-            form.isFieldTouched("emailId") && form.isFieldTouched("address")
-              ? false
-              : true
-          }
-          style={{ margin: "3px 3px 3px 3px" }}
-        >
-          완료
-        </Button>
+        <Form.Item>
+          <div id="message" style={{ margin: "3px 3px 3px 3px" }}>
+            이메일을 입력해 주세요.
+          </div>
+        </Form.Item>
+
+        <Form.Item>
+          {form.getFieldDecorator("email", {
+            rules: [
+              { required: true, message: "Please input your email address!" }
+            ]
+          })(<Input style={{ width: "45%" }} placeholder="e-mail ID" />)}
+        </Form.Item>
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ margin: "3px 3px 3px 3px" }}
+          >
+            완료
+          </Button>
+        </Form.Item>
       </Form>
     );
   }
