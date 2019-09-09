@@ -1,57 +1,53 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
-import { Button, Input } from "antd";
+import React from "react";
+import { Button, Input, Form, Icon } from "antd";
+//import { debounce } from "underscore";
+const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
-const SignUp = ({ history }) => {
-  const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
-  const [state, setState] = useState({
-    id: "",
-    password: "",
-    email: { id: "", address: "" },
-    isIdUnique: false,
-    pwCheck: false
-  });
-  const { id, password, email, isIdUnique, pwCheck } = state;
-  const InputGroup = Input.Group;
-  const style = { margin: "3px 3px 3px 3px" };
-  const handleClickConfirm = () => {
-    let userInfo = {
-      username: id,
-      email: email.id + "@" + email.address,
-      password: password,
-      userProfilePic: undefined
+//underscore의 debounce를 써야 할 것 같은데, 어떻게 걸어야할지?
+//유효성 검사는 어떻게?
+
+class SignUp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClickConfirm = this.handleClickConfirm.bind(this);
+    this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
+    this.validateToNextPassword = this.validateToNextPassword.bind(this);
+    this.checkUniqueId = this.checkUniqueId.bind(this);
+    this.checkUniqueEmail = this.checkUniqueEmail.bind(this);
+    this.state = {
+      isIdUnique: false,
+      pwCheck: false,
+      isEmailUnique: false
     };
-    fetch(`${API_HOST_URL}/users/signUp`, {
-      method: "POST",
-      body: JSON.stringify(userInfo),
-      headers: {
-        "Content-Type": "application/json"
+  }
+  handleClickConfirm(e) {
+    e.preventDefault();
+    const { form } = this.props;
+    form.validateFields((err, values) => {
+      if (!err) {
+        let userInfo = {
+          username: values.id,
+          email: values.email,
+          password: values.password,
+          userProfilePic: undefined
+        };
+        fetch(`${API_HOST_URL}/users/signUp`, {
+          method: "POST",
+          body: JSON.stringify(userInfo),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(() => {
+          alert("가입 완료");
+          this.props.history.push("/login");
+        });
       }
-    }).then(() => {
-      alert("가입 완료");
-      history.push("/login");
     });
-  };
+  }
 
-  const handleChangeEmailId = () => {
-    let emailId = document.getElementById("emailId").value;
-    setState({
-      ...state,
-      email: { ...email, id: emailId }
-    });
-  };
-
-  const handleChangeAddress = () => {
-    let address = document.getElementById("address").value;
-    setState({
-      ...state,
-      email: { ...email, address: address }
-    });
-  };
-
-  const handleClickIdCheck = () => {
-    let inputId = document.getElementById("inputId").value;
-    let username = { username: inputId };
+  checkUniqueId(rule, value, callback) {
+    let username = { username: value };
     fetch(`${API_HOST_URL}/users/checkId`, {
       method: "POST",
       body: JSON.stringify(username),
@@ -61,147 +57,167 @@ const SignUp = ({ history }) => {
     })
       .then(res => res.json())
       .then(res => {
-        let message = document.getElementById("inputIdCheck");
-        if (!res.isName) {
-          setState({
-            ...state,
-            id: inputId,
-            isIdUnique: true
-          });
-          message.innerHTML = "아이디를 사용하실 수 있습니다.";
-        } else {
-          message.innerHTML = "이미 존재하는 아이디입니다.";
+        if (res.isName) {
+          callback("이미 존재하는 아이디입니다");
+          this.setState({ isIdUnique: false });
+        } else if (value.length && !res.isName) {
+          callback();
+          this.setState({ isIdUnique: true });
         }
-      })
-      .catch(err => console.error(err));
-  };
+      });
+  }
 
-  const handleChangeId = () => {
-    //id의 input이랑 state의 id 값이 다르면 isIdUnique이 false로 바뀐다.
-    //dom에서 아이디 중복확인을 해주세요 라는 문구를 띄운다.
-    let inputId = document.getElementById("inputId").value;
-    let inputIdCheck = document.getElementById("inputIdCheck");
-    if (inputId !== id) {
-      setState({
-        ...state,
-        isIdUnique: false
+  async checkUniqueEmail(rule, value, callback) {
+    let email = { email: value };
+    await fetch(`${API_HOST_URL}/users/findId`, {
+      method: "POST",
+      body: JSON.stringify(email),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (res.username) {
+          callback("이미 사용 중인 메일입니다");
+          this.setState({ isEmailUnique: false });
+        } else if (value.length && !res.username) {
+          this.setState({ isEmailUnique: true });
+        } else if (!value.lenght) {
+          callback("메일 주소를 입력해 주세요.");
+        }
       });
-      inputIdCheck.innerHTML = "중복확인을 해주세요.";
-    } else {
-      setState({
-        ...state,
-        isIdUnique: true
-      });
-      inputIdCheck.innerHTML = "";
+  }
+
+  validateToNextPassword(rule, value, callback) {
+    const { form } = this.props;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(["confirm"], { force: true });
     }
-  };
-
-  const handleChangePassword = () => {
-    let password = document.getElementById("password").value;
-    let confirmPassword = document.getElementById("confirmPassword").value;
-    let confirmMessage = document.getElementById("confirmMessage");
-
-    if (password === confirmPassword) {
-      confirmMessage.innerHTML = "패스워드가 일치합니다.";
-      setState({
-        ...state,
-        password: password,
+    callback();
+  }
+  compareToFirstPassword(rule, value, callback) {
+    const { form } = this.props;
+    if (value && value !== form.getFieldValue("password")) {
+      callback("Two passwords that you enter is inconsistent!");
+      this.setState({
+        pwCheck: false
+      });
+    } else {
+      callback();
+      this.setState({
         pwCheck: true
       });
-    } else {
-      setState({
-        ...state,
-        pwCheck: false,
-        password: ""
-      });
-      confirmMessage.innerHTML = "패스워드가 일치하지 않습니다.";
     }
-  };
+  }
 
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: "30%",
-        left: "50%",
-        width: "100%",
-        transform: "translate(-50%, -50%)",
-        textAlign: "center"
-      }}
-    >
-      <h3>회원가입</h3>
-      <div>
-        <Input
-          style={{ ...style, width: "30%" }}
-          placeholder="ID"
-          type="text"
-          id="inputId"
-          onChange={handleChangeId}
-        />
-        <Button style={style} onClick={handleClickIdCheck}>
-          중복확인
-        </Button>
-        <div style={style} id="inputIdCheck"></div>
+  render() {
+    const form = this.props.form;
+    const style = { margin: "3px 3px 3px 3px" };
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: "30%",
+          left: "50%",
+          width: "100%",
+          transform: "translate(-50%, -50%)",
+          textAlign: "center"
+        }}
+      >
+        <Form className="signUp-form" onSubmit={this.handleClickConfirm}>
+          <Form.Item>
+            <h3>회원가입</h3>
+          </Form.Item>
+          <Form.Item>
+            {form.getFieldDecorator("id", {
+              rules: [
+                { required: true, message: "Please input your username!" },
+                { validator: this.checkUniqueId }
+              ]
+            })(
+              <Input
+                compact="true"
+                style={{ ...style, width: "35%" }}
+                prefix={
+                  <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                placeholder="ID"
+              />
+            )}
+            <div style={style} id="inputIdCheck"></div>
+          </Form.Item>
+          <Form.Item>
+            {form.getFieldDecorator("password", {
+              rules: [
+                {
+                  required: true,
+                  message: "Please input your password!"
+                },
+                {
+                  validator: this.validateToNextPassword
+                }
+              ]
+            })(
+              <Input.Password
+                style={{ ...style, width: "50%" }}
+                prefix={
+                  <Icon type="key" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                placeholder="Password"
+              />
+            )}
+          </Form.Item>
+          <Form.Item>
+            {form.getFieldDecorator("confirm", {
+              rules: [
+                {
+                  required: true,
+                  message: "Please confirm your password!"
+                },
+                {
+                  validator: this.compareToFirstPassword
+                }
+              ]
+            })(
+              <Input.Password
+                style={{ ...style, width: "50%" }}
+                prefix={
+                  <Icon type="key" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                placeholder="Password"
+              />
+            )}
+            <div style={style} id="confirmMessage"></div>
+          </Form.Item>
+          <Form.Item>
+            {form.getFieldDecorator("email", {
+              rules: [
+                {
+                  validator: this.checkUniqueEmail
+                }
+              ]
+            })(
+              <Input
+                style={{ width: "50%" }}
+                prefix={
+                  <Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                placeholder="email"
+              />
+            )}
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" style={style} htmlType="submit">
+              완료
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
-      <div>
-        <Input
-          style={{ ...style, width: "46%" }}
-          placeholder="PASSWORD"
-          type="password"
-          id="password"
-        />
-      </div>
-      <div>
-        <Input
-          style={{ ...style, width: "46%" }}
-          placeholder="PASSWORD"
-          type="password"
-          id="confirmPassword"
-          onChange={handleChangePassword}
-        />
-        <div style={style} id="confirmMessage"></div>
-      </div>
-      <div>
-        <InputGroup style={{ ...style, width: "46%", left: "26%" }}>
-          <Input
-            placeholder="E-MAIL"
-            id="emailId"
-            style={{ width: "40%" }}
-            onChange={handleChangeEmailId}
-          />
-          <Input
-            id="address"
-            addonBefore="@"
-            style={{ width: "60%" }}
-            onChange={handleChangeAddress}
-          />
-        </InputGroup>
-      </div>
-      <div>
-        <Button
-          style={style}
-          onClick={handleClickConfirm}
-          disabled={
-            id.length > 0 &&
-            password.length > 0 &&
-            email.id.length > 0 &&
-            email.address.length > 0 &&
-            isIdUnique &&
-            pwCheck
-              ? false
-              : true
-          }
-        >
-          완료
-        </Button>
-      </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
-export default SignUp;
+const WrappedSignUp = Form.create({ name: "signUp" })(SignUp);
 
-//메일주소 드롭으로 설정
-//id 중복체크 (서버에 전송)
-//회원정보 서버에 전송
-//유효성 검사
+export default WrappedSignUp;
