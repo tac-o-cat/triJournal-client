@@ -24,33 +24,40 @@ class SignUp extends React.Component {
   handleClickConfirm(e) {
     e.preventDefault();
     const { form } = this.props;
-    form.validateFields((err, values) => {
-      if (!err) {
-        let userInfo = {
-          username: values.id,
-          email: values.email,
-          password: values.password,
-          userProfilePic: undefined
-        };
-        fetch(`${API_HOST_URL}/users/signUp`, {
-          method: "POST",
-          body: JSON.stringify(userInfo),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }).then(() => {
-          alert("가입 완료");
-          this.props.history.push("/login");
-        });
-      }
-    });
+    if (!this.state.isIdUnique) {
+      alert("아이디 중복 검사를 해 주세요.");
+    } else if (!this.state.isEmailUnique) {
+      alert("이메일 중복 검사를 해 주세요.");
+    } else {
+      form.validateFields((err, values) => {
+        if (!err) {
+          let userInfo = {
+            username: values.id,
+            email: values.email,
+            password: values.password,
+            userProfilePic: undefined
+          };
+          fetch(`${API_HOST_URL}/users/signUp`, {
+            method: "POST",
+            body: JSON.stringify(userInfo),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }).then(() => {
+            alert("가입 완료");
+            this.props.history.push("/login");
+          });
+        }
+      });
+    }
   }
 
-  checkUniqueId(rule, value, callback) {
-    let username = { username: value };
+  checkUniqueId() {
+    let username = this.props.form.getFieldValue("id");
+    let body = { username: username };
     fetch(`${API_HOST_URL}/users/checkId`, {
       method: "POST",
-      body: JSON.stringify(username),
+      body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json"
       }
@@ -58,20 +65,21 @@ class SignUp extends React.Component {
       .then(res => res.json())
       .then(res => {
         if (res.isName) {
-          callback("이미 존재하는 아이디입니다");
+          alert("이미 사용 중인 아이디입니다.");
           this.setState({ isIdUnique: false });
-        } else if (value.length && !res.isName) {
-          callback();
+        } else if (username.length && !res.isName) {
+          alert("가입 가능한 아이디입니다.");
           this.setState({ isIdUnique: true });
         }
       });
   }
 
-  async checkUniqueEmail(rule, value, callback) {
-    let email = { email: value };
-    await fetch(`${API_HOST_URL}/users/findId`, {
+  checkUniqueEmail() {
+    let email = this.props.form.getFieldValue("email");
+    let body = { email: email };
+    fetch(`${API_HOST_URL}/users/findId`, {
       method: "POST",
-      body: JSON.stringify(email),
+      body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json"
       }
@@ -79,12 +87,11 @@ class SignUp extends React.Component {
       .then(res => res.json())
       .then(res => {
         if (res.username) {
-          callback("이미 사용 중인 메일입니다");
+          alert("이미 사용 중인 이메일입니다.");
           this.setState({ isEmailUnique: false });
-        } else if (value.length && !res.username) {
+        } else if (email.length && !res.username) {
+          alert("가입 가능한 이메일입니다.");
           this.setState({ isEmailUnique: true });
-        } else if (!value.lenght) {
-          callback("메일 주소를 입력해 주세요.");
         }
       });
   }
@@ -99,7 +106,7 @@ class SignUp extends React.Component {
   compareToFirstPassword(rule, value, callback) {
     const { form } = this.props;
     if (value && value !== form.getFieldValue("password")) {
-      callback("Two passwords that you enter is inconsistent!");
+      callback("비밀번호가 일치하지 않습니다.");
       this.setState({
         pwCheck: false
       });
@@ -131,10 +138,7 @@ class SignUp extends React.Component {
           </Form.Item>
           <Form.Item>
             {form.getFieldDecorator("id", {
-              rules: [
-                { required: true, message: "Please input your username!" },
-                { validator: this.checkUniqueId }
-              ]
+              rules: [{ required: true, message: "아이디를 입력해 주세요." }]
             })(
               <Input
                 compact="true"
@@ -143,8 +147,12 @@ class SignUp extends React.Component {
                   <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
                 }
                 placeholder="ID"
+                onChange={() => {
+                  this.setState({ isIdUnique: false });
+                }}
               />
             )}
+            <Button onClick={this.checkUniqueId}>중복체크</Button>
             <div style={style} id="inputIdCheck"></div>
           </Form.Item>
           <Form.Item>
@@ -152,7 +160,7 @@ class SignUp extends React.Component {
               rules: [
                 {
                   required: true,
-                  message: "Please input your password!"
+                  message: "비밀번호를 입력해 주세요."
                 },
                 {
                   validator: this.validateToNextPassword
@@ -173,7 +181,7 @@ class SignUp extends React.Component {
               rules: [
                 {
                   required: true,
-                  message: "Please confirm your password!"
+                  message: "비밀번호를 확인해 주세요."
                 },
                 {
                   validator: this.compareToFirstPassword
@@ -194,7 +202,12 @@ class SignUp extends React.Component {
             {form.getFieldDecorator("email", {
               rules: [
                 {
-                  validator: this.checkUniqueEmail
+                  required: true,
+                  message: "이메일을 입력해 주세요."
+                },
+                {
+                  type: "email",
+                  message: "올바른 이메일을 입력해 주세요."
                 }
               ]
             })(
@@ -204,8 +217,12 @@ class SignUp extends React.Component {
                   <Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />
                 }
                 placeholder="email"
+                onChange={() => {
+                  this.setState({ isEmailUnique: false });
+                }}
               />
             )}
+            <Button onClick={this.checkUniqueEmail}>중복체크</Button>
           </Form.Item>
           <Form.Item>
             <Button type="primary" style={style} htmlType="submit">
