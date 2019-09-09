@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Icon } from "antd";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
 class FindId extends React.Component {
@@ -61,7 +61,13 @@ class FindId extends React.Component {
             rules: [
               { required: true, message: "Please input your email address!" }
             ]
-          })(<Input style={{ width: "45%" }} placeholder="e-mail ID" />)}
+          })(
+            <Input
+              style={{ width: "45%" }}
+              prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />}
+              placeholder="email"
+            />
+          )}
         </Form.Item>
         <Form.Item>
           <Button
