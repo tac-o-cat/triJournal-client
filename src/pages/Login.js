@@ -81,15 +81,15 @@ class Login extends React.Component {
                 {
                   required: true,
                   message: "Please input your password!"
-                },
-                {
-                  validator: this.validateToNextPassword
                 }
               ]
             })(
               <Input.Password
                 compact="true"
                 style={{ ...style, width: "50%" }}
+                prefix={
+                  <Icon type="key" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
                 placeholder="Password"
               />
             )}
