@@ -2,35 +2,37 @@
 import React from "react";
 import { Form, Input, Button, Icon } from "antd";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
-const InputGroup = Input.Group;
 
 class FindPw extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
   }
-  handleClick() {
+  handleClick(e) {
+    e.preventDefault();
     const form = this.props.form;
-    let emailId = form.getFieldValue("emailId");
-    let address = form.getFieldValue("address");
-    let email = { email: `${emailId}@${address}` };
-    fetch(`${API_HOST_URL}/users/findPassword`, {
-      method: "POST",
-      body: JSON.stringify(email),
-      headers: {
-        "Content-Type": "application/json"
+    form.validateFields((err, values) => {
+      if (!err) {
+        let email = { email: values.email };
+        fetch(`${API_HOST_URL}/users/findPassword`, {
+          method: "POST",
+          body: JSON.stringify(email),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+          .then(res => res.json())
+          .then(res => {
+            let message = document.getElementById("message");
+            if (res.password) {
+              message.innerHTML = `회원님의 비밀번호는 ${res.password}입니다.`;
+            } else {
+              message.innerHTML = "해당 이메일로 가입한 아이디가 없습니다.";
+            }
+          })
+          .catch(err => console.error(err));
       }
-    })
-      .then(res => res.json())
-      .then(res => {
-        let message = document.getElementById("message");
-        if (res.password) {
-          message.innerHTML = `회원님의 비밀번호는 ${res.password}입니다.`;
-        } else {
-          message.innerHTML = "해당 이메일로 가입한 아이디가 없습니다.";
-        }
-      })
-      .catch(err => console.error(err));
+    });
   }
   render() {
     const form = this.props.form;
@@ -46,42 +48,44 @@ class FindPw extends React.Component {
           transform: "translate(-50%, -50%)",
           textAlign: "center"
         }}
+        onSubmit={this.handleClick}
       >
-        <div style={style}>아이디와 이메일을 입력해 주세요.</div>
-        {form.getFieldDecorator("id", {
-          rules: [{ required: true, message: "Please input your username!" }]
-        })(
-          <Input
-            id="id"
-            compact="true"
-            style={{ ...style, width: "50%" }}
-            prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
-            placeholder="ID"
-          />
-        )}
-        <InputGroup compact>
-          {form.getFieldDecorator("emailId", {
+        <Form.Item>
+          <div id="message" style={style}>
+            아이디와 이메일을 입력해 주세요.
+          </div>
+        </Form.Item>
+        <Form.Item>
+          {form.getFieldDecorator("id", {
             rules: [{ required: true, message: "Please input your username!" }]
-          })(<Input id="emailId" style={{ width: "45%" }} addonAfter="@" />)}
-          {form.getFieldDecorator("address", {
-            rules: [{ required: true, message: "Please input your username!" }]
-          })(<Input id="address" style={{ width: "55%" }} />)}
-        </InputGroup>
-        <div id="message"></div>
-        <Button
-          type="primary"
-          style={style}
-          onClick={this.handleClick}
-          disabled={
-            form.isFieldTouched("id") &&
-            form.isFieldTouched("emailId") &&
-            form.isFieldTouched("address")
-              ? false
-              : true
-          }
-        >
-          완료
-        </Button>
+          })(
+            <Input
+              compact="true"
+              style={{ ...style, width: "50%" }}
+              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+              placeholder="username"
+            />
+          )}
+        </Form.Item>
+        <Form.Item>
+          {form.getFieldDecorator("email", {
+            rules: [
+              { required: true, message: "Please input your email address!" }
+            ]
+          })(
+            <Input
+              style={{ width: "50%" }}
+              prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />}
+              placeholder="email"
+            />
+          )}
+        </Form.Item>
+        <Form.Item>
+          {" "}
+          <Button type="primary" style={style} htmlType="submit">
+            완료
+          </Button>
+        </Form.Item>
       </Form>
     );
   }
