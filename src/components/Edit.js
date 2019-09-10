@@ -17,7 +17,7 @@ const Edit = props => {
       worst: editWorst,
       todo: editTodo
     };
-    props.editDiary(props.diary.id, body);
+    props.editDiary(body, props.diary.id);
   };
 
   const handleCancel = () => {
