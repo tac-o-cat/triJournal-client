@@ -1,43 +1,128 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect
+} from "react-router-dom";
 import { Layout } from "antd";
-import Write from "./Write";
-import NavBar from "./NavBar";
+import WrappedWrite from "./Write";
+import NavBar from "../components/NavBar";
 import List from "./List";
 import MyInfo from "./MyInfo";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
-const Page = props => {
-  const { Header, Content } = Layout;
-  const [currentUser, setCurrentUser] = useState({ username: undefined });
-  useEffect(() => {
-    let isSubscribed = true;
+class Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.postDiary = this.postDiary.bind(this);
+    this.deleteDiary = this.deleteDiary.bind(this);
+    this.editDiary = this.editDiary.bind(this);
+    this.setSidebarOpen = this.setSidebarOpen.bind(this);
+    this.setLogout = this.setLogout.bind(this);
+    this.state = {
+      loading: true,
+      sidebarOpen: false,
+      diaries: [{ init: true }]
+    };
+  }
+  fetchDiary() {
+    return fetch(`${API_HOST_URL}/posts/${this.props.currentUser}`).then(res =>
+      res.json()
+    );
+  }
+  setSidebarOpen() {
+    this.setState({ sidebarOpen: !this.state.sidebarOpen });
+  }
+  componentDidMount() {
+    if (this.props.currentUser.length) {
+      this.fetchDiary().then(diaries =>
+        this.setState({ diaries: diaries, loading: false })
+      );
+    }
+  }
+  async postDiary(diary) {
+    await fetch(`${API_HOST_URL}/posts/${this.props.currentUser}`, {
+      method: "POST",
+      body: JSON.stringify(diary),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    let loadNewDiary = await this.fetchDiary();
+    this.setState({
+      diaries: this.state.diaries.concat(loadNewDiary[loadNewDiary.length - 1])
+    });
+  }
+  async deleteDiary(postId) {
+    await fetch(`${API_HOST_URL}/posts/${this.props.currentUser}/${postId}`, {
+      method: "DELETE"
+    });
+    let loadNewDiary = await this.fetchDiary();
+    this.setState({ diaries: loadNewDiary });
+  }
+  async editDiary(body, postId) {
+    await fetch(`${API_HOST_URL}/posts/${this.props.currentUser}/${postId}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json());
 
-    fetch(`${API_HOST_URL}/users/${props.location.state.username}`)
-      .then(res => res.json())
-      .then(res => (isSubscribed ? setCurrentUser(res) : null));
-    return () => (isSubscribed = false);
-  }, [props.location.state.username]);
-
-  return (
-    <Router>
-      <Header style={{ backgroundColor: "#d3adf7" }}>
-        <Route path="/page" component={NavBar} />
-        <span>triJournal</span>
-      </Header>
-      <Content style={{ padding: "30px 50px 50px 50px" }}>
-        <Switch>
-          <Route
-            path="/page/write"
-            component={() => <Write username={currentUser.username} />}
+    let loadNewDiary = await this.fetchDiary();
+    this.setState({ diaries: loadNewDiary });
+  }
+  setLogout() {
+    this.props.setLogout("");
+  }
+  render() {
+    const { Header, Content } = Layout;
+    return this.props.currentUser === "" ? (
+      <Redirect to="/" />
+    ) : (
+      <Router>
+        <Header style={{ backgroundColor: "#d3adf7" }}>
+          <NavBar
+            currentUser={this.props.currentUser}
+            setLogout={this.setLogout}
+            setSidebarOpen={this.setSidebarOpen}
+            sidebarOpen={this.state.sidebarOpen}
           />
-          <Route path="/page/list" component={List} />
-          <Route path="/page/myInfo" component={MyInfo} />
-        </Switch>
-      </Content>
-    </Router>
-  );
-};
+          <span>triJournal</span>
+        </Header>
+        <Content style={{ padding: "30px 50px 50px 50px" }}>
+          <Switch>
+            <Route
+              path="/page/write"
+              component={() => (
+                <WrappedWrite
+                  diaries={this.state.diaries}
+                  loading={this.state.loading}
+                  postDiary={this.postDiary}
+                  deleteDiary={this.deleteDiary}
+                  editDiary={this.editDiary}
+                />
+              )}
+            />
+            <Route
+              path="/page/list"
+              component={() => (
+                <List
+                  diaries={this.state.diaries}
+                  loading={this.state.loading}
+                  deleteDiary={this.deleteDiary}
+                  editDiary={this.editDiary}
+                />
+              )}
+            />
+            <Route path="/page/myInfo" component={MyInfo} />
+          </Switch>
+        </Content>
+      </Router>
+    );
+  }
+}
 
 export default Page;

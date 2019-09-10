@@ -1,8 +1,8 @@
 import React from "react";
 import { Button } from "antd";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
-import WrappedFindPw from "./FindPw";
-import WrappedFindId from "./FindId";
+import WrappedFindPw from "../components/FindPw";
+import WrappedFindId from "../components/FindId";
 
 // eslint-disable-next-line react/prop-types
 const FindIdPw = ({ history }) => {
@@ -27,7 +27,7 @@ const FindIdPw = ({ history }) => {
         <Button
           onClick={() => {
             // eslint-disable-next-line react/prop-types
-            history.push("/login");
+            history.push("/");
           }}
         >
           뒤로 가기
