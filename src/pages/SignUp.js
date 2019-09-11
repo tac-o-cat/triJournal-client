@@ -37,7 +37,7 @@ class SignUp extends React.Component {
             }
           }).then(() => {
             alert("가입 완료");
-            this.props.history.push("/login");
+            this.props.history.push("/");
           });
         }
       });
