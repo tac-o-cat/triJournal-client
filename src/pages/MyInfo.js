@@ -28,7 +28,6 @@ const MyInfo = () => {
   const { loading, imageUrl } = myInfoState;
 
   const handleChange = info => {
-    console.log("hahahahh");
     if (info.file.status === "uploading") {
       setmyInfoState({
         ...myInfoState,
