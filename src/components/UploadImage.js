@@ -9,7 +9,6 @@ const UploadImage = props => {
     listType: "picture", // 프리뷰 모양
     onChange(info) {
       let fileList = info.fileList.slice(-1); // fileList의 lengt를 1로 고정. 최근 업로드된 파일만 남아있음.
-      console.log(info.fileList, "파일리스트", props.fileList);
       fileList = fileList.map(file => {
         if (file.response) {
           file.url = file.response.imageUrl;
