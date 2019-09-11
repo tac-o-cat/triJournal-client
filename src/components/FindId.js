@@ -4,11 +4,7 @@ import { Form, Input, Button, Icon } from "antd";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
 class FindId extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleClick(e) {
+  handleClick = e => {
     e.preventDefault();
     const form = this.props.form;
     form.validateFields((err, values) => {
@@ -34,7 +30,7 @@ class FindId extends React.Component {
           .catch(err => console.error(err));
       }
     });
-  }
+  };
   render() {
     const form = this.props.form;
     return (

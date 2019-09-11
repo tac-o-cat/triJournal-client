@@ -4,13 +4,8 @@ import { Input, Button, Form } from "antd";
 import UploadImage from "./UploadImage";
 
 class InputDiary extends Component {
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleImageUpload = this.handleImageUpload.bind(this);
-    this.state = { fileList: [] };
-  }
-  handleClick(e) {
+  state = { fileList: [] };
+  handleClick = e => {
     e.preventDefault();
     const { form } = this.props;
     form.validateFields(async (err, values) => {
@@ -26,10 +21,10 @@ class InputDiary extends Component {
       };
       this.props.postDiary(diary);
     });
-  }
-  // handleImageUpload(fileList) {
-  //   this.setState({ fileList: fileList });
-  // }
+  };
+  handleImageUpload = fileList => {
+    this.setState({ fileList: fileList });
+  };
   render() {
     const form = this.props.form;
     const currentUser = this.props.currentUser;

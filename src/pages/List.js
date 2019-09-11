@@ -4,14 +4,10 @@ import Diary from "../components/Diary";
 import { Pagination, Empty } from "antd";
 
 class List extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.state = { minValue: 0, maxValue: 10 };
-  }
-  handleChange(page) {
+  state = { minValue: 0, maxValue: 10 };
+  handleChange = page => {
     this.setState({ minValue: (page - 1) * 10, maxValue: page * 10 });
-  }
+  };
 
   render() {
     const { minValue, maxValue } = this.state;

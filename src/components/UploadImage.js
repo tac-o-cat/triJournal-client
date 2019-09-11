@@ -4,7 +4,6 @@ import { Upload, Icon, Button } from "antd";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
 const UploadImage = props => {
-  console.log();
   const img = {
     action: `${API_HOST_URL}/posts/${props.currentUser}/postJournalPic`, //사진을 올릴 URL
     listType: "picture", // 프리뷰 모양

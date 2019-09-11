@@ -8,20 +8,8 @@ const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 //유효성 검사는 어떻게?
 
 class SignUp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleClickConfirm = this.handleClickConfirm.bind(this);
-    this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
-    this.validateToNextPassword = this.validateToNextPassword.bind(this);
-    this.checkUniqueId = this.checkUniqueId.bind(this);
-    this.checkUniqueEmail = this.checkUniqueEmail.bind(this);
-    this.state = {
-      isIdUnique: false,
-      pwCheck: false,
-      isEmailUnique: false
-    };
-  }
-  handleClickConfirm(e) {
+  state = { isIdUnique: false, pwCheck: false, isEmailUnique: false };
+  handleClickConfirm = e => {
     e.preventDefault();
     const { form } = this.props;
     if (!this.state.isIdUnique) {
@@ -50,9 +38,9 @@ class SignUp extends React.Component {
         }
       });
     }
-  }
+  };
 
-  checkUniqueId() {
+  checkUniqueId = () => {
     let username = this.props.form.getFieldValue("id");
     let body = { username: username };
     fetch(`${API_HOST_URL}/users/checkId`, {
@@ -72,9 +60,9 @@ class SignUp extends React.Component {
           this.setState({ isIdUnique: true });
         }
       });
-  }
+  };
 
-  checkUniqueEmail() {
+  checkUniqueEmail = () => {
     let email = this.props.form.getFieldValue("email");
     let body = { email: email };
     fetch(`${API_HOST_URL}/users/findId`, {
@@ -94,16 +82,16 @@ class SignUp extends React.Component {
           this.setState({ isEmailUnique: true });
         }
       });
-  }
+  };
 
-  validateToNextPassword(rule, value, callback) {
+  validateToNextPassword = (rule, value, callback) => {
     const { form } = this.props;
     if (value && this.state.confirmDirty) {
       form.validateFields(["confirm"], { force: true });
     }
     callback();
-  }
-  compareToFirstPassword(rule, value, callback) {
+  };
+  compareToFirstPassword = (rule, value, callback) => {
     const { form } = this.props;
     if (value && value !== form.getFieldValue("password")) {
       callback("비밀번호가 일치하지 않습니다.");
@@ -116,7 +104,7 @@ class SignUp extends React.Component {
         pwCheck: true
       });
     }
-  }
+  };
 
   render() {
     const form = this.props.form;
