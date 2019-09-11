@@ -6,7 +6,12 @@
     "prettier",
     "prettier/react"
   ],
-  "plugins": ["prettier", "react", "react-hooks"],
+  "parser": "babel-eslint",
+  "plugins": [
+    "prettier",
+    "react",
+    "react-hooks"
+  ],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
