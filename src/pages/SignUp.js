@@ -1,14 +1,16 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Button, Input, Form, Icon } from "antd";
-//import { debounce } from "underscore";
+import UploadProfile from "../components/UploadProfile";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
-//underscore의 debounce를 써야 할 것 같은데, 어떻게 걸어야할지?
-//유효성 검사는 어떻게?
-
 class SignUp extends React.Component {
-  state = { isIdUnique: false, pwCheck: false, isEmailUnique: false };
+  state = {
+    isIdUnique: false,
+    pwCheck: false,
+    isEmailUnique: false,
+    imageUrl: ""
+  };
   handleClickConfirm = e => {
     e.preventDefault();
     const { form } = this.props;
@@ -23,7 +25,9 @@ class SignUp extends React.Component {
             username: values.id,
             email: values.email,
             password: values.password,
-            userProfilePic: undefined
+            userProfilePic: this.state.imageUrl.length
+              ? this.state.imageUrl
+              : undefined
           };
           fetch(`${API_HOST_URL}/users/signUp`, {
             method: "POST",
@@ -105,7 +109,9 @@ class SignUp extends React.Component {
       });
     }
   };
-
+  setImageUrl = imageUrl => {
+    this.setState({ imageUrl: imageUrl });
+  };
   render() {
     const form = this.props.form;
     const style = { margin: "3px 3px 3px 3px" };
@@ -123,6 +129,13 @@ class SignUp extends React.Component {
         <Form className="signUp-form" onSubmit={this.handleClickConfirm}>
           <Form.Item>
             <h3>회원가입</h3>
+          </Form.Item>
+          <Form.Item>
+            <UploadProfile
+              currentUser={this.props.form.getFieldValue("id")}
+              imageUrl={this.state.imageUrl}
+              setImageUrl={this.setImageUrl}
+            />
           </Form.Item>
           <Form.Item>
             {form.getFieldDecorator("id", {
