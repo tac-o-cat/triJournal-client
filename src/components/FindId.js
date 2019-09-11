@@ -20,7 +20,6 @@ class FindId extends React.Component {
           .then(res => res.json())
           .then(res => {
             let message = document.getElementById("message");
-            console.log(message);
             if (res.username) {
               message.innerHTML = `회원님의 아이디는 ${res.username}입니다.`;
             } else {

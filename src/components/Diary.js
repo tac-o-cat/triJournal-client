@@ -26,7 +26,6 @@ class Diary extends React.Component {
     const loading = this.props.loading;
     const diary = this.props.diary;
     const isVisible = this.state.isVisible;
-    console.log(diary);
     return (
       <Card
         style={{ width: 400, margin: "1% 1% 1% 1%" }}
