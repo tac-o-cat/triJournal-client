@@ -30,7 +30,9 @@ class InputDiary extends Component {
     const currentUser = this.props.currentUser;
     const style = { margin: "3px 3px 3px 3px" };
     return (
-      <div style={{ width: "50%", margin: "0 50px 0 50px" }}>
+      <div
+        style={{ width: "95%", margin: "0 50px 0 50px", textAlign: "right" }}
+      >
         <Form onSubmit={this.handleClick}>
           <Form.Item>
             {form.getFieldDecorator("best", {
