@@ -1,27 +1,17 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Button, Input, Form, Icon } from "antd";
-//import { debounce } from "underscore";
+import UploadProfile from "../components/UploadProfile";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
-//underscore의 debounce를 써야 할 것 같은데, 어떻게 걸어야할지?
-//유효성 검사는 어떻게?
-
 class SignUp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleClickConfirm = this.handleClickConfirm.bind(this);
-    this.compareToFirstPassword = this.compareToFirstPassword.bind(this);
-    this.validateToNextPassword = this.validateToNextPassword.bind(this);
-    this.checkUniqueId = this.checkUniqueId.bind(this);
-    this.checkUniqueEmail = this.checkUniqueEmail.bind(this);
-    this.state = {
-      isIdUnique: false,
-      pwCheck: false,
-      isEmailUnique: false
-    };
-  }
-  handleClickConfirm(e) {
+  state = {
+    isIdUnique: false,
+    pwCheck: false,
+    isEmailUnique: false,
+    imageUrl: ""
+  };
+  handleClickConfirm = e => {
     e.preventDefault();
     const { form } = this.props;
     if (!this.state.isIdUnique) {
@@ -35,7 +25,9 @@ class SignUp extends React.Component {
             username: values.id,
             email: values.email,
             password: values.password,
-            userProfilePic: undefined
+            userProfilePic: this.state.imageUrl.length
+              ? this.state.imageUrl
+              : undefined
           };
           fetch(`${API_HOST_URL}/users/signUp`, {
             method: "POST",
@@ -45,14 +37,14 @@ class SignUp extends React.Component {
             }
           }).then(() => {
             alert("가입 완료");
-            this.props.history.push("/login");
+            this.props.history.push("/");
           });
         }
       });
     }
-  }
+  };
 
-  checkUniqueId() {
+  checkUniqueId = () => {
     let username = this.props.form.getFieldValue("id");
     let body = { username: username };
     fetch(`${API_HOST_URL}/users/checkId`, {
@@ -72,9 +64,9 @@ class SignUp extends React.Component {
           this.setState({ isIdUnique: true });
         }
       });
-  }
+  };
 
-  checkUniqueEmail() {
+  checkUniqueEmail = () => {
     let email = this.props.form.getFieldValue("email");
     let body = { email: email };
     fetch(`${API_HOST_URL}/users/findId`, {
@@ -94,16 +86,16 @@ class SignUp extends React.Component {
           this.setState({ isEmailUnique: true });
         }
       });
-  }
+  };
 
-  validateToNextPassword(rule, value, callback) {
+  validateToNextPassword = (rule, value, callback) => {
     const { form } = this.props;
     if (value && this.state.confirmDirty) {
       form.validateFields(["confirm"], { force: true });
     }
     callback();
-  }
-  compareToFirstPassword(rule, value, callback) {
+  };
+  compareToFirstPassword = (rule, value, callback) => {
     const { form } = this.props;
     if (value && value !== form.getFieldValue("password")) {
       callback("비밀번호가 일치하지 않습니다.");
@@ -116,8 +108,10 @@ class SignUp extends React.Component {
         pwCheck: true
       });
     }
-  }
-
+  };
+  setImageUrl = imageUrl => {
+    this.setState({ imageUrl: imageUrl });
+  };
   render() {
     const form = this.props.form;
     const style = { margin: "3px 3px 3px 3px" };
@@ -128,14 +122,20 @@ class SignUp extends React.Component {
           top: "30%",
           left: "50%",
           width: "100%",
-          transform: "translate(-50%, -50%)",
+          transform: "translate(-50%, -30%)",
           textAlign: "center"
         }}
       >
+        <h3>회원가입</h3>
+        <UploadProfile
+          currentUser={this.props.form.getFieldValue("id")}
+          imageUrl={this.state.imageUrl}
+          setImageUrl={this.setImageUrl}
+        />
         <Form className="signUp-form" onSubmit={this.handleClickConfirm}>
-          <Form.Item>
-            <h3>회원가입</h3>
-          </Form.Item>
+          {/* <Form.Item>
+          </Form.Item> */}
+          {/* <Form.Item></Form.Item> */}
           <Form.Item>
             {form.getFieldDecorator("id", {
               rules: [{ required: true, message: "아이디를 입력해 주세요." }]

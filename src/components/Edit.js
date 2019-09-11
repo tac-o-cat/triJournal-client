@@ -1,52 +1,70 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { Modal, Input } from "antd";
+import { Modal, Input, message } from "antd";
+import UploadImage from "./UploadImage";
 
-const Edit = props => {
-  const handleOk = () => {
-    // 모달창을 닫는다.
-    props.hideModal();
-    // 모달 창의 수정된 value를 가져온다.
+class Edit extends React.Component {
+  state = { fileList: [] };
+  handleOk = () => {
     let editBest = document.getElementById("editBest").value;
     let editWorst = document.getElementById("editWorst").value;
     let editTodo = document.getElementById("editTodo").value;
-    // 수정된 value를 서버로 보낸다.
+    let editPic = this.state.fileList.length
+      ? this.state.fileList[0].url
+      : this.props.diary.picUrl;
     let body = {
-      ...props.diary,
+      ...this.props.diary,
       best: editBest,
       worst: editWorst,
-      todo: editTodo
+      todo: editTodo,
+      picUrl: editPic
     };
-    props.editDiary(body, props.diary.id);
+    this.props.hideModal();
+    message.success("수정 성공");
+    this.props.editDiary(body, this.props.diary.id);
   };
 
-  const handleCancel = () => {
-    props.hideModal();
+  handleCancel = () => {
+    this.props.hideModal();
+    message.error("수정 취소");
   };
-  return (
-    <Modal
-      title={props.diary.createdAt.slice(0, 10)}
-      visible={props.isVisible}
-      onOk={handleOk}
-      onCancel={handleCancel}
-    >
-      <Input
-        id="editBest"
-        placeholder="오늘 가장 좋았던 일"
-        defaultValue={props.diary.best}
-      />
-      <Input
-        id="editWorst"
-        placeholder="오늘 가장 나빴던 일"
-        defaultValue={props.diary.worst}
-      />
-      <Input
-        id="editTodo"
-        placeholder="내일 할 일"
-        defaultValue={props.diary.todo}
-      />
-    </Modal>
-  );
-};
+  handleImageUpload = fileList => {
+    this.setState({ fileList: fileList });
+  };
+  render() {
+    const diary = this.props.diary;
+    const isVisible = this.props.isVisible;
+    const fileList = this.state.fileList;
+    return (
+      <Modal
+        title={diary.createdAt.slice(0, 10)}
+        visible={isVisible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
+      >
+        <Input
+          id="editBest"
+          placeholder="오늘 가장 좋았던 일"
+          defaultValue={diary.best}
+        />
+        <Input
+          id="editWorst"
+          placeholder="오늘 가장 나빴던 일"
+          defaultValue={diary.worst}
+        />
+        <Input
+          id="editTodo"
+          placeholder="내일 할 일"
+          defaultValue={diary.todo}
+        />
+        <UploadImage
+          currentUser={diary.userName}
+          imageUpload={this.handleImageUpload}
+          fileList={fileList}
+        />
+      </Modal>
+    );
+  }
+}
 
 export default Edit;

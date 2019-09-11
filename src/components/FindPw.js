@@ -4,11 +4,7 @@ import { Form, Input, Button, Icon } from "antd";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
 class FindPw extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleClick(e) {
+  handleClick = e => {
     e.preventDefault();
     const form = this.props.form;
     form.validateFields((err, values) => {
@@ -33,7 +29,7 @@ class FindPw extends React.Component {
           .catch(err => console.error(err));
       }
     });
-  }
+  };
   render() {
     const form = this.props.form;
     const style = { margin: "3px 3px 3px 3px" };

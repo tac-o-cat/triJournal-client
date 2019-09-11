@@ -6,14 +6,10 @@ import FindIdPw from "./pages/FindIdPw";
 import Page from "./pages/Page";
 
 class App extends React.Component {
-  constructor() {
-    super();
-    this.setCurrentUser = this.setCurrentUser.bind(this);
-    this.state = { currentUser: "" };
-  }
-  setCurrentUser(username) {
+  state = { currentUser: "" };
+  setCurrentUser = username => {
     this.setState({ currentUser: username });
-  }
+  };
   render() {
     return (
       <Router>

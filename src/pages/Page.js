@@ -14,35 +14,27 @@ import MyInfo from "./MyInfo";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
 class Page extends React.Component {
-  constructor(props) {
-    super(props);
-    this.postDiary = this.postDiary.bind(this);
-    this.deleteDiary = this.deleteDiary.bind(this);
-    this.editDiary = this.editDiary.bind(this);
-    this.setSidebarOpen = this.setSidebarOpen.bind(this);
-    this.setLogout = this.setLogout.bind(this);
-    this.state = {
-      loading: true,
-      sidebarOpen: false,
-      diaries: [{ init: true }]
-    };
-  }
-  fetchDiary() {
+  state = {
+    loading: true,
+    sidebarOpen: false,
+    diaries: [{ init: true }]
+  };
+  fetchDiary = () => {
     return fetch(`${API_HOST_URL}/posts/${this.props.currentUser}`).then(res =>
       res.json()
     );
-  }
-  setSidebarOpen() {
+  };
+  setSidebarOpen = () => {
     this.setState({ sidebarOpen: !this.state.sidebarOpen });
-  }
-  componentDidMount() {
+  };
+  componentDidMount = () => {
     if (this.props.currentUser.length) {
       this.fetchDiary().then(diaries =>
         this.setState({ diaries: diaries, loading: false })
       );
     }
-  }
-  async postDiary(diary) {
+  };
+  postDiary = async diary => {
     await fetch(`${API_HOST_URL}/posts/${this.props.currentUser}`, {
       method: "POST",
       body: JSON.stringify(diary),
@@ -54,15 +46,15 @@ class Page extends React.Component {
     this.setState({
       diaries: this.state.diaries.concat(loadNewDiary[loadNewDiary.length - 1])
     });
-  }
-  async deleteDiary(postId) {
+  };
+  deleteDiary = async postId => {
     await fetch(`${API_HOST_URL}/posts/${this.props.currentUser}/${postId}`, {
       method: "DELETE"
     });
     let loadNewDiary = await this.fetchDiary();
     this.setState({ diaries: loadNewDiary });
-  }
-  async editDiary(body, postId) {
+  };
+  editDiary = async (body, postId) => {
     await fetch(`${API_HOST_URL}/posts/${this.props.currentUser}/${postId}`, {
       method: "PUT",
       body: JSON.stringify(body),
@@ -73,10 +65,10 @@ class Page extends React.Component {
 
     let loadNewDiary = await this.fetchDiary();
     this.setState({ diaries: loadNewDiary });
-  }
-  setLogout() {
+  };
+  setLogout = () => {
     this.props.setLogout("");
-  }
+  };
   render() {
     const { Header, Content } = Layout;
     return this.props.currentUser === "" ? (
@@ -98,6 +90,7 @@ class Page extends React.Component {
               path="/page/write"
               component={() => (
                 <WrappedWrite
+                  currentUser={this.props.currentUser}
                   diaries={this.state.diaries}
                   loading={this.state.loading}
                   postDiary={this.postDiary}

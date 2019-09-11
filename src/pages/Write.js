@@ -19,7 +19,10 @@ const Write = props => {
 
   return (
     <div>
-      <WrappedInputDiary postDiary={postDiary} />
+      <WrappedInputDiary
+        postDiary={postDiary}
+        currentUser={props.currentUser}
+      />
       {!diaries.length && !loading ? (
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}

@@ -4,32 +4,23 @@ import { Card, Icon, Popconfirm, message } from "antd";
 import Edit from "./Edit";
 
 class Diary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleConfirmDelete = this.handleConfirmDelete.bind(this);
-    this.handleCancelDelete = this.handleCancelDelete.bind(this);
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
-    this.editDiary = this.editDiary.bind(this);
-    this.state = { isVisible: false };
-  }
-
-  handleConfirmDelete() {
+  state = { isVisible: false };
+  handleConfirmDelete = () => {
     message.success("삭제 완료");
     this.props.deleteDiary(this.props.diary.id);
-  }
-  handleCancelDelete() {
+  };
+  handleCancelDelete = () => {
     message.error("삭제 취소");
-  }
-  showModal() {
+  };
+  showModal = () => {
     this.setState({ isVisible: !this.state.isVisible });
-  }
-  hideModal() {
+  };
+  hideModal = () => {
     this.setState({ isVisible: !this.state.isVisible });
-  }
-  editDiary(body, diaryId) {
+  };
+  editDiary = (body, diaryId) => {
     this.props.editDiary(body, diaryId);
-  }
+  };
   render() {
     const { Meta } = Card;
     const loading = this.props.loading;
@@ -40,8 +31,8 @@ class Diary extends React.Component {
         style={{ width: 400, margin: "1% 1% 1% 1%" }}
         loading={loading}
         cover={
-          diary.image ? (
-            <img alt={diary.createdAt} src={diary.image} />
+          diary.picUrl ? (
+            <img alt={diary.createdAt} src={diary.picUrl} />
           ) : (
             undefined
           )

@@ -4,11 +4,7 @@ import { Form, Input, Button, Icon } from "antd";
 const API_HOST_URL = process.env.REACT_APP_API_HOST_URL;
 
 class FindId extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleClick(e) {
+  handleClick = e => {
     e.preventDefault();
     const form = this.props.form;
     form.validateFields((err, values) => {
@@ -24,7 +20,6 @@ class FindId extends React.Component {
           .then(res => res.json())
           .then(res => {
             let message = document.getElementById("message");
-            console.log(message);
             if (res.username) {
               message.innerHTML = `회원님의 아이디는 ${res.username}입니다.`;
             } else {
@@ -34,7 +29,7 @@ class FindId extends React.Component {
           .catch(err => console.error(err));
       }
     });
-  }
+  };
   render() {
     const form = this.props.form;
     return (
