@@ -122,21 +122,20 @@ class SignUp extends React.Component {
           top: "30%",
           left: "50%",
           width: "100%",
-          transform: "translate(-50%, -50%)",
+          transform: "translate(-50%, -30%)",
           textAlign: "center"
         }}
       >
+        <h3>회원가입</h3>
+        <UploadProfile
+          currentUser={this.props.form.getFieldValue("id")}
+          imageUrl={this.state.imageUrl}
+          setImageUrl={this.setImageUrl}
+        />
         <Form className="signUp-form" onSubmit={this.handleClickConfirm}>
-          <Form.Item>
-            <h3>회원가입</h3>
-          </Form.Item>
-          <Form.Item>
-            <UploadProfile
-              currentUser={this.props.form.getFieldValue("id")}
-              imageUrl={this.state.imageUrl}
-              setImageUrl={this.setImageUrl}
-            />
-          </Form.Item>
+          {/* <Form.Item>
+          </Form.Item> */}
+          {/* <Form.Item></Form.Item> */}
           <Form.Item>
             {form.getFieldDecorator("id", {
               rules: [{ required: true, message: "아이디를 입력해 주세요." }]

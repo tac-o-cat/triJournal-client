@@ -47,7 +47,7 @@ class UploadProfile extends React.Component {
     const uploadButton = (
       <div>
         <Icon type={this.state.loading ? "loading" : "plus"} />
-        <div className="ant-upload-text">Upload</div>
+        <div className="ant-upload-text">Profile</div>
       </div>
     );
     const { imageUrl } = this.state;
@@ -59,28 +59,17 @@ class UploadProfile extends React.Component {
       action: `${API_HOST_URL}/users/postUserProfilePic`
     };
     return (
-      <div
-        style={{
-          position: "absolute",
-          top: "30%",
-          left: "50%",
-          width: "100%",
-          transform: "translate(-50%, -50%)",
-          textAlign: "center"
-        }}
+      <Upload
+        {...props}
+        beforeUpload={beforeUpload}
+        onChange={this.handleChange}
       >
-        <Upload
-          {...props}
-          beforeUpload={beforeUpload}
-          onChange={this.handleChange}
-        >
-          {imageUrl ? (
-            <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-          ) : (
-            uploadButton
-          )}
-        </Upload>
-      </div>
+        {imageUrl ? (
+          <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
+        ) : (
+          uploadButton
+        )}
+      </Upload>
     );
   }
 }
