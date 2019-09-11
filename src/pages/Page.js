@@ -98,6 +98,7 @@ class Page extends React.Component {
               path="/page/write"
               component={() => (
                 <WrappedWrite
+                  currentUser={this.props.currentUser}
                   diaries={this.state.diaries}
                   loading={this.state.loading}
                   postDiary={this.postDiary}

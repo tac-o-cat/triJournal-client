@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { Modal, Input } from "antd";
+import { Modal, Input, message } from "antd";
+import UploadImage from "./UploadImage";
 
 const Edit = props => {
   const handleOk = () => {
@@ -17,12 +18,20 @@ const Edit = props => {
       worst: editWorst,
       todo: editTodo
     };
+    message.success("수정 성공");
     props.editDiary(body, props.diary.id);
   };
 
   const handleCancel = () => {
     props.hideModal();
+    message.error("수정 취소");
   };
+  const handleImageUpload = fileList => {
+    let editImg = document.getElementById("editImg").value;
+    console.log(editImg);
+    editImg = fileList[0].url;
+  };
+  console.log(props.diary);
   return (
     <Modal
       title={props.diary.createdAt.slice(0, 10)}
@@ -44,6 +53,16 @@ const Edit = props => {
         id="editTodo"
         placeholder="내일 할 일"
         defaultValue={props.diary.todo}
+      />
+      <Input
+        id="editImg"
+        // style={{ display: "none" }}
+        defaultValue={props.diary.picUrl}
+      />
+      <UploadImage
+        currentUser={props.diary.username}
+        imageUpload={handleImageUpload}
+        fileList={[]}
       />
     </Modal>
   );

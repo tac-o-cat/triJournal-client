@@ -35,13 +35,14 @@ class Diary extends React.Component {
     const loading = this.props.loading;
     const diary = this.props.diary;
     const isVisible = this.state.isVisible;
+    console.log(diary);
     return (
       <Card
         style={{ width: 400, margin: "1% 1% 1% 1%" }}
         loading={loading}
         cover={
-          diary.image ? (
-            <img alt={diary.createdAt} src={diary.image} />
+          diary.picUrl ? (
+            <img alt={diary.createdAt} src={diary.picUrl} />
           ) : (
             undefined
           )

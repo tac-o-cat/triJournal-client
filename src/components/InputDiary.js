@@ -1,11 +1,14 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import { Input, Button, Form } from "antd";
+import UploadImage from "./UploadImage";
 
 class InputDiary extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.handleImageUpload = this.handleImageUpload.bind(this);
+    this.state = { fileList: [] };
   }
   handleClick(e) {
     e.preventDefault();
@@ -16,14 +19,20 @@ class InputDiary extends Component {
         worst: values.worst,
         todo: values.todo,
         longLog: undefined,
-        picUrl: values.image,
+        picUrl: this.state.fileList.length
+          ? this.state.fileList[0].url
+          : undefined,
         userName: this.props.username
       };
       this.props.postDiary(diary);
     });
   }
+  // handleImageUpload(fileList) {
+  //   this.setState({ fileList: fileList });
+  // }
   render() {
     const form = this.props.form;
+    const currentUser = this.props.currentUser;
     const style = { margin: "3px 3px 3px 3px" };
     return (
       <div style={{ width: "50%", margin: "0 50px 0 50px" }}>
@@ -66,6 +75,11 @@ class InputDiary extends Component {
             <Button htmlType="submit" style={style}>
               작성
             </Button>
+            <UploadImage
+              currentUser={currentUser}
+              imageUpload={this.handleImageUpload}
+              fileList={this.state.fileList}
+            />
           </Form.Item>
         </Form>
       </div>
